@@ -52,6 +52,11 @@ defmodule TypeTalk do
     |> handle_response        
   end
 
+  def topic_members(token, topic_id) do
+    HTTPoison.get("https://typetalk.in/api/v1/topics/#{topic_id}/members/status", %{"Authorization" => "Bearer #{token["access_token"]}"})
+    |> handle_response
+  end
+
   # Private functioins
 
   defp handle_response({:ok, res}) do
