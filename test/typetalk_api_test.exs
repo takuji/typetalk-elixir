@@ -23,4 +23,10 @@ defmodule TypeTalkTest do
     {:ok, profile} = TypeTalk.profile(token)
     assert profile["account"] != nil
   end
+
+  test "account profile" do
+    token = access_token()
+    {:ok, profile} = TypeTalk.account_profile(token, "shimokawa")
+    assert profile["account"] != nil    
+  end
 end
