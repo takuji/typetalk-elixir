@@ -10,6 +10,9 @@ defmodule TypeTalkTest do
     json    
   end
 
+  defp account() do
+  end
+
   test "access_token" do
     {:ok, json} = TypeTalk.access_token(
       client_id: @client_id,
@@ -28,5 +31,18 @@ defmodule TypeTalkTest do
     token = access_token()
     {:ok, profile} = TypeTalk.account_profile(token, "shimokawa")
     assert profile["account"] != nil    
+  end
+
+  test "account status" do
+    # token = access_token()
+    # {:ok, profile} = TypeTalk.account_profile(token, "shimokawa")
+    # {:ok, json} = TypeTalk.accounts_status(token, [profile["account"]["id"]])
+    # assert json["accounts"] != nil    
+  end
+
+  test "topics" do
+    token = access_token()
+    {:ok, res} = TypeTalk.topics(token)
+    assert res["topics"] != nil
   end
 end

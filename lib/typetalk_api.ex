@@ -34,6 +34,21 @@ defmodule TypeTalk do
     |> handle_response        
   end
 
+  def accounts_status(token, accounts \\ []) do
+    q = Enum.zip([accounts, 0..(length(accounts)-1)])
+        |> Enum.reduce(%{}, fn ({account, idx}, acc) -> Map.put(acc, "accountIds[#{idx}]", account) end)
+        |> URI.encode_query()
+    HTTPoison.get("https://typetalk.in/api/v1/accounts/status", %{"Authorization" => "Bearer #{token["access_token"]}"})
+    |> handle_response        
+  end
+
+  def topics(token) do
+    HTTPoison.get("https://typetalk.in/api/v1/topics", %{"Authorization" => "Bearer #{token["access_token"]}"})
+    |> handle_response        
+  end
+
+  # Private functioins
+
   defp handle_response({:ok, res}) do
     Poison.decode(res.body)
   end
