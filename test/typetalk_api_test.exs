@@ -5,8 +5,9 @@ defmodule TypeTalkTest do
   @client_id System.get_env("TYPETALK_CLIENT_ID")
   @client_secret System.get_env("TYPETALK_CLIENT_SECRET")
 
-  test "the truth" do
-    assert 1 + 1 == 2
+  defp access_token() do
+    {:ok, json} = TypeTalk.access_token(client_id: @client_id, client_secret: @client_secret)
+    json    
   end
 
   test "access_token" do
@@ -15,5 +16,11 @@ defmodule TypeTalkTest do
       client_secret: @client_secret
     )
     assert json["access_token"] != nil
+  end
+
+  test "profile" do
+    token = access_token()
+    {:ok, profile} = TypeTalk.profile(token)
+    assert profile["account"] != nil
   end
 end

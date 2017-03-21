@@ -24,6 +24,11 @@ defmodule TypeTalk do
     |> handle_response
   end
 
+  def profile(token) do
+    HTTPoison.get("https://typetalk.in/api/v1/profile", %{"Authorization" => "Bearer #{token["access_token"]}"})
+    |> handle_response    
+  end
+
   defp handle_response({:ok, res}) do
     Poison.decode(res.body)
   end
