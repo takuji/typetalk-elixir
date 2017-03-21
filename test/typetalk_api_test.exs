@@ -53,7 +53,15 @@ defmodule TypeTalkTest do
   test "messages" do
     token = access_token()
     {:ok, res} = TypeTalk.messages(token)
-    assert res["topics"] != nil    
+    assert res["topics"] != nil
+  end
+
+  test "topic messages" do
+    token = access_token(scope: "my,topic.read")
+    {:ok, res} = TypeTalk.topics(token)
+    topic = Enum.at(res["topics"], 0)
+    {:ok, res} = TypeTalk.topic_messages(token, topic["topic"]["id"])
+    assert res["posts"] != nil
   end
 
   test "topic members" do
