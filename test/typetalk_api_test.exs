@@ -45,4 +45,10 @@ defmodule TypeTalkTest do
     {:ok, res} = TypeTalk.topics(token)
     assert res["topics"] != nil
   end
+
+  test "messages" do
+    token = access_token()
+    {:ok, res} = TypeTalk.messages(token)
+    assert res["topics"] != nil    
+  end
 end
