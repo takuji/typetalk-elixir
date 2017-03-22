@@ -16,7 +16,17 @@ defmodule TypeTalk do
     :world
   end
 
+  @api_base "https://typetalk.in/api/v1"
   @default_params [grant_type: "client_credentials", scope: "my"]
+
+  defp get(auth, path, params \\ :empty) do
+    case params do
+      :empty -> "#{@api_base}/#{path}"
+      _ -> "#{@api_base}/#{path}?#{URI.encode_query(params)}"
+    end
+    |> HTTPoison.get(auth_header(auth))
+    |> handle_response
+  end
 
   def access_token(auth) do
     params = {:form, Keyword.merge(@default_params, auth)}
@@ -24,43 +34,33 @@ defmodule TypeTalk do
     |> handle_response
   end
 
-  def profile(token) do
-    HTTPoison.get("https://typetalk.in/api/v1/profile", auth_header(token))
-    |> handle_response    
+  def profile(auth) do
+    get(auth, "profile")
   end
 
-  def account_profile(token, account_name) do
-    HTTPoison.get("https://typetalk.in/api/v1/accounts/profile/#{account_name}", auth_header(token))
-    |> handle_response        
+  def account_profile(auth, account_name) do
+    get(auth, "accounts/profile/#{account_name}")
   end
 
-  def accounts_status(token, accounts \\ []) do
-    q = Enum.zip([accounts, 0..(length(accounts)-1)])
-        |> Enum.reduce(%{}, fn ({account, idx}, acc) -> Map.put(acc, "accountIds[#{idx}]", account) end)
-        |> URI.encode_query()
-    HTTPoison.get("https://typetalk.in/api/v1/accounts/status", auth_header(token))
-    |> handle_response        
+  def accounts_status(auth, accounts \\ []) do
+    q = Enum.join(accounts, ",")
+    get(auth, "accounts/status", %{"accountIds" => q})
   end
 
-  def topics(token) do
-    HTTPoison.get("https://typetalk.in/api/v1/topics", auth_header(token))
-    |> handle_response        
+  def topics(auth) do
+    get(auth, "topics")
   end
 
-  def messages(token) do
-    HTTPoison.get("https://typetalk.in/api/v1/messages", auth_header(token))
-    |> handle_response        
+  def messages(auth) do
+    get(auth, "messages")
   end
 
   def topic_messages(auth, topic_id) do
-    IO.inspect "https://typetalk.in/api/v1/topics/#{topic_id}"
-    HTTPoison.get("https://typetalk.in/api/v1/topics/#{topic_id}", auth_header(auth))
-    |> handle_response        
+    get(auth, "topics/#{topic_id}")
   end
 
-  def topic_members(token, topic_id) do
-    HTTPoison.get("https://typetalk.in/api/v1/topics/#{topic_id}/members/status", auth_header(token))
-    |> handle_response
+  def topic_members(auth, topic_id) do
+    get(auth, "topics/#{topic_id}/members/status")
   end
 
   # Private functioins

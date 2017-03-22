@@ -38,9 +38,9 @@ defmodule TypeTalkTest do
   end
 
   test "account status" do
-    token = access_token(scope: "my")
+    token = access_token()
     {:ok, profile} = TypeTalk.account_profile(token, "shimokawa")
-    {:ok, json} = TypeTalk.accounts_status(token, [profile["account"]["id"]])
+    {status, json} = TypeTalk.accounts_status(token, [profile["account"]["id"]])
     assert json["accounts"] != nil    
   end
 

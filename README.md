@@ -1,6 +1,6 @@
-# TypeTalk
+# TypeTalk API client for Elixir
 
-**TODO: Add description**
+Work in progress
 
 ## Installation
 
