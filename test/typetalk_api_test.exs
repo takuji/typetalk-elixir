@@ -56,11 +56,11 @@ defmodule TypeTalkTest do
     assert res["topics"] != nil
   end
 
-  test "topic messages" do
+  test "topic posts" do
     token = access_token(scope: "my,topic.read")
     {:ok, res} = TypeTalk.topics(token)
     topic = Enum.at(res["topics"], 0)
-    {:ok, res} = TypeTalk.topic_messages(token, topic["topic"]["id"])
+    {:ok, res} = TypeTalk.topic_posts(token, topic["topic"]["id"])
     assert res["posts"] != nil
   end
 
@@ -70,5 +70,15 @@ defmodule TypeTalkTest do
     topic = Enum.at(res["topics"], 0)
     {:ok, res} = TypeTalk.topic_members(token, topic["topic"]["id"])
     assert res["accounts"] != nil
+  end
+
+  test "topic post" do
+    token = access_token(scope: "topic.read,my")
+    {:ok, res} = TypeTalk.topics(token)
+    topic = Enum.at(res["topics"], 0)
+    {:ok, res} = TypeTalk.topic_posts(token, topic["topic"]["id"])
+    post = Enum.at(res["posts"], 0)
+    {:ok, res} = TypeTalk.topic_post(token, topic["topic"]["id"], post["id"])
+    assert res["post"] != nil
   end
 end

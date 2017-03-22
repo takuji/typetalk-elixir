@@ -55,12 +55,16 @@ defmodule TypeTalk do
     get(auth, "messages")
   end
 
-  def topic_messages(auth, topic_id) do
+  def topic_posts(auth, topic_id) do
     get(auth, "topics/#{topic_id}")
   end
 
   def topic_members(auth, topic_id) do
     get(auth, "topics/#{topic_id}/members/status")
+  end
+
+  def topic_post(auth, topic_id, post_id) do
+    get(auth, "topics/#{topic_id}/posts/#{post_id}")
   end
 
   # Private functioins
