@@ -81,4 +81,16 @@ defmodule TypeTalkTest do
     {:ok, res} = TypeTalk.topic_post(token, topic["topic"]["id"], post["id"])
     assert res["post"] != nil
   end
+
+  test "update topic post" do
+    token = access_token(scope: "my,topic.read,topic.post")
+    {:ok, res} = TypeTalk.topics(token)
+    topic = Enum.at(res["topics"], 0)
+    {:ok, res} = TypeTalk.topic_posts(token, topic["topic"]["id"])
+    post = Enum.at(res["posts"], 0)
+    message = post["message"]
+    new_message = message <> " a"
+    {:ok, res} = TypeTalk.update_topic_post(token, topic["topic"]["id"], post["id"], new_message)
+    assert res["post"]["message"] == new_message
+  end
 end

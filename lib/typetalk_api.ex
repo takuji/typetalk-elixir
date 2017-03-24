@@ -28,6 +28,12 @@ defmodule TypeTalk do
     |> handle_response
   end
 
+  defp put(auth, path, params) do
+    "#{@api_base}/#{path}?#{URI.encode_query(params)}"
+    |> HTTPoison.put("", auth_header(auth))
+    |> handle_response
+  end
+
   def access_token(auth) do
     params = {:form, Keyword.merge(@default_params, auth)}
     HTTPoison.post("https://typetalk.in/oauth2/access_token", params)
@@ -65,6 +71,10 @@ defmodule TypeTalk do
 
   def topic_post(auth, topic_id, post_id) do
     get(auth, "topics/#{topic_id}/posts/#{post_id}")
+  end
+
+  def update_topic_post(auth, topic_id, post_id, message) do
+    put(auth, "topics/#{topic_id}/posts/#{post_id}", %{"message" => message})
   end
 
   # Private functioins
