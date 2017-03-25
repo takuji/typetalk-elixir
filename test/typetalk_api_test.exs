@@ -9,7 +9,7 @@ defmodule TypeTalkTest do
     {:ok, json} = TypeTalk.access_token(
       client_id: @client_id,
       client_secret: @client_secret,
-      scope: Keyword.get(options, :scope, "my")
+      scope: Keyword.get(options, :scope, "my,topic.read,topic.post")
     )
     json    
   end
@@ -22,7 +22,15 @@ defmodule TypeTalkTest do
 
   defp get_topic_posts(auth, topic_id) do
     {:ok, res} = TypeTalk.topic_posts(auth, topic_id)
-    res["posts"]
+    res
+  end
+
+  defp get_topic_post(auth) do
+    topic = get_topic(auth)
+    posts = get_topic_posts(auth, topic["id"])
+    post = Enum.at(posts["posts"], 0)
+    {:ok, res} = TypeTalk.topic_post(auth, topic["id"], post["id"])
+    res
   end
 
   test "access_token" do
@@ -65,36 +73,30 @@ defmodule TypeTalkTest do
   end
 
   test "topic posts" do
-    token = access_token(scope: "my,topic.read")
+    token = access_token()
     topic = get_topic(token)
     {:ok, res} = TypeTalk.topic_posts(token, topic["id"])
     assert res["posts"] != nil
   end
 
   test "create topic post" do
-    auth = access_token(scope: "my,topic.read,topic.post")
-    {:ok, res} = TypeTalk.topics(auth)
+    auth = access_token()
     topic = get_topic(auth)
     topic_id = topic["id"]
-    {:ok, res} = TypeTalk.topic_posts(auth, topic_id)
-    n1 = length(res["posts"])
-    message = "なんでやねん"
+    message = "なんでやねん #{:os.system_time(:millisecond)}"
     {:ok, res} = TypeTalk.create_topic_post(auth, topic_id, message)
     assert res["post"]["message"] == message
-    {:ok, res} = TypeTalk.topic_posts(auth, topic_id)
-    n2 = length(res["posts"])
-    assert n2 == (n1 + 1)
   end
 
   test "topic members" do
-    token = access_token(scope: "topic.read,my")
+    token = access_token()
     topic = get_topic(token)
     {:ok, res} = TypeTalk.topic_members(token, topic["id"])
     assert res["accounts"] != nil
   end
 
   test "topic post" do
-    token = access_token(scope: "topic.read,my")
+    token = access_token()
     topic = get_topic(token)
     {:ok, res} = TypeTalk.topic_posts(token, topic["id"])
     post = Enum.at(res["posts"], 0)
@@ -103,7 +105,7 @@ defmodule TypeTalkTest do
   end
 
   test "update topic post" do
-    token = access_token(scope: "my,topic.read,topic.post")
+    token = access_token()
     topic = get_topic(token)
     {:ok, res} = TypeTalk.topic_posts(token, topic["id"])
     post = Enum.at(res["posts"], 0)
@@ -114,15 +116,19 @@ defmodule TypeTalkTest do
   end
 
   test "delete topic post" do
-    auth = access_token(scope: "my,topic.read,topic.post")
+    auth = access_token()
     topic = get_topic(auth)
     {:ok, created} = TypeTalk.create_topic_post(auth, topic["id"], "Hello")
-    n1 = length(get_topic_posts(auth, topic["id"]))
-
     {:ok, deleted} = TypeTalk.delete_topic_post(auth, topic["id"], created["post"]["id"])
     assert deleted["id"] == created["post"]["id"]
+  end
 
-    n2 = length(get_topic_posts(auth, topic["id"]))
-    assert n2 == (n1 - 1)
+  # Like
+
+  test "create like" do
+    auth = access_token()
+    post = get_topic_post(auth)
+    {:ok, res} = TypeTalk.create_like(auth, post["topic"]["id"], post["post"]["id"])
+    assert res["like"] != nil
   end
 end

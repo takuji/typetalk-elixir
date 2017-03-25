@@ -17,7 +17,7 @@ defmodule TypeTalk do
   end
 
   @api_base "https://typetalk.in/api/v1"
-  @default_params [grant_type: "client_credentials", scope: "my"]
+  @default_params [grant_type: "client_credentials", scope: "my,topic.read,topi.post"]
 
   defp get(auth, path, params \\ :empty) do
     case params do
@@ -28,8 +28,9 @@ defmodule TypeTalk do
     |> handle_response
   end
 
-  defp post(auth, path, params) do
-    HTTPoison.post("#{@api_base}/#{path}", {:form, params}, auth_header(auth))
+  defp post(auth, path, params \\ []) do
+    data = if params == :empty, do: "", else: {:form, params}
+    HTTPoison.post("#{@api_base}/#{path}", data, auth_header(auth))
     |> handle_response
   end
 
@@ -95,6 +96,12 @@ defmodule TypeTalk do
 
   def delete_topic_post(auth, topic_id, post_id) do
     delete(auth, "topics/#{topic_id}/posts/#{post_id}")
+  end
+
+  # Like
+
+  def create_like(auth, topic_id, post_id) do
+    post(auth, "topics/#{topic_id}/posts/#{post_id}/like")
   end
 
   # Private functioins
