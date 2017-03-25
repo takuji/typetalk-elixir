@@ -124,7 +124,6 @@ defmodule TypeTalk do
   def messages_of_account(auth, account_name, options \\ []) do
     data = Keyword.merge([direction: "forward"], options)
     account = URI.encode("@#{account_name}")
-    IO.puts account
     get(auth, "messages/#{account}", data)
   end
 
@@ -140,6 +139,13 @@ defmodule TypeTalk do
 
   def mark_notifications_as_read(auth) do
     put(auth, "notifications")    
+  end
+
+  # Topics
+
+  def mark_topic_as_read(auth, topic_id, post_id \\ nil) do
+    params = if post_id == nil, do: [topicId: topic_id], else: [topicId: topic_id, postId: post_id]
+    put(auth, "bookmarks", params)
   end
 
   # Private functioins

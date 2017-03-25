@@ -10,6 +10,25 @@ defmodule TypeTalkTestHelper do
     )
     json    
   end
+
+  def get_topic(auth) do
+    {:ok, res} = TypeTalk.topics(auth)
+    topic = Enum.at(res["topics"], 0)
+    topic["topic"]
+  end
+
+  def get_topic_posts(auth, topic_id) do
+    {:ok, res} = TypeTalk.topic_posts(auth, topic_id)
+    res
+  end
+
+  def get_topic_post(auth) do
+    topic = get_topic(auth)
+    posts = get_topic_posts(auth, topic["id"])
+    post = Enum.at(posts["posts"], 0)
+    {:ok, res} = TypeTalk.topic_post(auth, topic["id"], post["id"])
+    res
+  end
 end
 
 ExUnit.start()
