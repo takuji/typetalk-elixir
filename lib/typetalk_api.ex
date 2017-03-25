@@ -133,6 +133,10 @@ defmodule TypeTalk do
     get(auth, "notifications")
   end
 
+  def notifications_status(auth) do
+    get(auth, "notifications/status")
+  end
+
   # Private functioins
 
   defp auth_header(auth) do
