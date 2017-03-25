@@ -14,13 +14,15 @@ defmodule TypeTalkTest do
     json    
   end
 
-  defp account() do
-  end
-
   defp get_topic(auth) do
     {:ok, res} = TypeTalk.topics(auth)
     topic = Enum.at(res["topics"], 0)
     topic["topic"]
+  end
+
+  defp get_topic_posts(auth, topic_id) do
+    {:ok, res} = TypeTalk.topic_posts(auth, topic_id)
+    res["posts"]
   end
 
   test "access_token" do
@@ -109,11 +111,6 @@ defmodule TypeTalkTest do
     new_message = message <> " a"
     {:ok, res} = TypeTalk.update_topic_post(token, topic["id"], post["id"], new_message)
     assert res["post"]["message"] == new_message
-  end
-
-  defp get_topic_posts(auth, topic_id) do
-    {:ok, res} = TypeTalk.topic_posts(auth, topic_id)
-    res["posts"]
   end
 
   test "delete topic post" do
