@@ -34,8 +34,9 @@ defmodule TypeTalk do
     |> handle_response
   end
 
-  defp put(auth, path, params) do
-    "#{@api_base}/#{path}?#{URI.encode_query(params)}"
+  defp put(auth, path, params \\ :empty) do
+    data = if params == :empty, do: "", else: "?#{URI.encode_query(params)}"
+    "#{@api_base}/#{path}#{data}"
     |> HTTPoison.put("", auth_header(auth))
     |> handle_response
   end
@@ -135,6 +136,10 @@ defmodule TypeTalk do
 
   def notifications_status(auth) do
     get(auth, "notifications/status")
+  end
+
+  def mark_notifications_as_read(auth) do
+    put(auth, "notifications")    
   end
 
   # Private functioins
