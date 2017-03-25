@@ -118,6 +118,21 @@ defmodule TypeTalk do
     delete(auth, "topics/#{topic_id}/favorite")
   end
 
+  # Direct messages
+
+  def messages_of_account(auth, account_name, options \\ []) do
+    data = Keyword.merge([direction: "forward"], options)
+    account = URI.encode("@#{account_name}")
+    IO.puts account
+    get(auth, "messages/#{account}", data)
+  end
+
+  # Notifications
+
+  def notifications(auth) do
+    get(auth, "notifications")
+  end
+
   # Private functioins
 
   defp auth_header(auth) do
@@ -125,7 +140,10 @@ defmodule TypeTalk do
   end
 
   defp handle_response({:ok, res}) do
-    Poison.decode(res.body)
+    case res.status_code do
+      200 -> Poison.decode(res.body)
+      _ -> {:error, res}
+    end
   end
 
   defp handle_response({_, err}) do
