@@ -108,6 +108,16 @@ defmodule TypeTalk do
     delete(auth, "topics/#{topic_id}/posts/#{post_id}/like")    
   end
 
+  # Favorite topic
+
+  def add_to_favorite(auth, topic_id) do
+    post(auth, "topics/#{topic_id}/favorite")
+  end
+
+  def delete_from_favorite(auth, topic_id) do
+    delete(auth, "topics/#{topic_id}/favorite")
+  end
+
   # Private functioins
 
   defp auth_header(auth) do
@@ -119,8 +129,6 @@ defmodule TypeTalk do
   end
 
   defp handle_response({_, err}) do
-    IO.puts("----- ")
-    IO.inspect(err)
     {:error, err}
   end
 end

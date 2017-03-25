@@ -141,4 +141,25 @@ defmodule TypeTalkTest do
     {:ok, res} = TypeTalk.delete_like(auth, post["topic"]["id"], post["post"]["id"])
     assert res["like"] != nil
   end
+
+  # Favorite topic
+
+  test "add topic to favorite" do
+    auth = access_token()
+    topic = get_topic(auth)
+    TypeTalk.delete_from_favorite(auth, topic["id"])
+
+    {:ok, res} = TypeTalk.add_to_favorite(auth, topic["id"])
+    assert res["favorite"] == true
+  end
+
+  test "delete topic from favorite" do
+    auth = access_token()
+    topic = get_topic(auth)
+    TypeTalk.delete_from_favorite(auth, topic["id"])
+    
+    {:ok, res} = TypeTalk.add_to_favorite(auth, topic["id"])
+    {:ok, res} = TypeTalk.delete_from_favorite(auth, topic["id"])
+    assert res["favorite"] == false
+  end
 end
