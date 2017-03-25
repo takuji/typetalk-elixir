@@ -28,9 +28,20 @@ defmodule TypeTalk do
     |> handle_response
   end
 
+  defp post(auth, path, params) do
+    HTTPoison.post("#{@api_base}/#{path}", {:form, params}, auth_header(auth))
+    |> handle_response
+  end
+
   defp put(auth, path, params) do
     "#{@api_base}/#{path}?#{URI.encode_query(params)}"
     |> HTTPoison.put("", auth_header(auth))
+    |> handle_response
+  end
+
+  defp delete(auth, path) do
+    "#{@api_base}/#{path}"
+    |> HTTPoison.delete(auth_header(auth))
     |> handle_response
   end
 
@@ -65,6 +76,11 @@ defmodule TypeTalk do
     get(auth, "topics/#{topic_id}")
   end
 
+  def create_topic_post(auth, topic_id, message, options \\ []) do
+    params = options |> Keyword.merge([message: message])
+    post(auth, "topics/#{topic_id}", params)
+  end
+
   def topic_members(auth, topic_id) do
     get(auth, "topics/#{topic_id}/members/status")
   end
@@ -75,6 +91,10 @@ defmodule TypeTalk do
 
   def update_topic_post(auth, topic_id, post_id, message) do
     put(auth, "topics/#{topic_id}/posts/#{post_id}", %{"message" => message})
+  end
+
+  def delete_topic_post(auth, topic_id, post_id) do
+    delete(auth, "topics/#{topic_id}/posts/#{post_id}")
   end
 
   # Private functioins
