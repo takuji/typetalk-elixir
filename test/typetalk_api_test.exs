@@ -128,7 +128,17 @@ defmodule TypeTalkTest do
   test "create like" do
     auth = access_token()
     post = get_topic_post(auth)
+    TypeTalk.delete_like(auth, post["topic"]["id"], post["post"]["id"])
     {:ok, res} = TypeTalk.create_like(auth, post["topic"]["id"], post["post"]["id"])
+    assert res["like"] != nil
+  end
+
+  test "delete like" do
+    auth = access_token()
+    post = get_topic_post(auth)
+    TypeTalk.delete_like(auth, post["topic"]["id"], post["post"]["id"])
+    {:ok, _}   = TypeTalk.create_like(auth, post["topic"]["id"], post["post"]["id"])
+    {:ok, res} = TypeTalk.delete_like(auth, post["topic"]["id"], post["post"]["id"])
     assert res["like"] != nil
   end
 end

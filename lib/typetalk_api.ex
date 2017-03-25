@@ -104,6 +104,10 @@ defmodule TypeTalk do
     post(auth, "topics/#{topic_id}/posts/#{post_id}/like")
   end
 
+  def delete_like(auth, topic_id, post_id) do
+    delete(auth, "topics/#{topic_id}/posts/#{post_id}/like")    
+  end
+
   # Private functioins
 
   defp auth_header(auth) do
@@ -115,6 +119,8 @@ defmodule TypeTalk do
   end
 
   defp handle_response({_, err}) do
+    IO.puts("----- ")
+    IO.inspect(err)
     {:error, err}
   end
 end
