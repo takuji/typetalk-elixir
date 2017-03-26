@@ -28,9 +28,15 @@ defmodule TypeTalk do
     |> handle_response
   end
 
-  defp post(auth, path, params \\ []) do
-    data = if params == :empty, do: "", else: {:form, params}
-    HTTPoison.post("#{@api_base}/#{path}", data, auth_header(auth))
+  defp post(auth, path, params \\ :empty) do
+    data = cond do
+      is_binary(params) -> params
+      is_list(params) ->{:form, params}
+      is_map(params) -> {:form, Enum.into(params, [])}
+    end
+    header = Map.merge(auth_header(auth), %{"Content-Type" => "application/x-www-form-urlencoded"})
+    # data = if params == :empty, do: "", else: {:form, params}
+    HTTPoison.post("#{@api_base}/#{path}", data, header)
     |> handle_response
   end
 
@@ -196,7 +202,9 @@ defmodule TypeTalk do
   end
 
   def create_talk(auth, topic_id, name, post_ids) do
-    data = [talkName: name, postIds: Enum.join(post_ids, ",")]
+    data = Enum.zip(post_ids, 0..(length(post_ids) - 1))
+         |> Enum.reduce(%{"talkName" => name}, fn ({post_id, idx}, acc) -> Map.put(acc, "postIds[#{idx}]", post_id) end)
+         |> URI.encode_query()
     post(auth, "topics/#{topic_id}/talks", data)
   end
 
@@ -213,7 +221,9 @@ defmodule TypeTalk do
   end
 
   def add_posts_to_talk(auth, topic_id, talk_id, post_ids) do
-    data = [postIds: Enum.join(post_ids, ",")]
+    data = Enum.zip(post_ids, 0..(length(post_ids) - 1))
+         |> Enum.reduce(%{}, fn ({post_id, idx}, acc) -> Map.put(acc, "postIds[#{idx}]", post_id) end)
+         |> URI.encode_query()
     post(auth, "topics/#{topic_id}/talks/#{talk_id}/posts", data)
   end
 
