@@ -7,4 +7,11 @@ defmodule TypeTalkTest do
     {:ok, res} = TypeTalk.search_friends(auth, "a")
     assert res["accounts"] != nil
   end
+
+  test "search account" do
+    auth = access_token()
+    {:ok, res} = TypeTalk.search_account(auth, "shimokawa")
+    assert res["id"] != nil
+    IO.inspect res
+  end
 end

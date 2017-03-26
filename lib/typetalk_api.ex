@@ -173,7 +173,7 @@ defmodule TypeTalk do
     get(auth, "spaces/#{space_key}/members")
   end
 
-  # Friends
+  # Search accounts
 
   def search_friends(auth, q, options \\ []) do
     params = %{
@@ -182,6 +182,10 @@ defmodule TypeTalk do
       count: Keyword.get(options, :count, 30)
     }
     get(auth, "search/friends", params)
+  end
+
+  def search_account(auth, name_or_email) do
+    get(auth, "search/accounts", [nameOrEmailAddress: name_or_email])
   end
 
   # Private functioins
