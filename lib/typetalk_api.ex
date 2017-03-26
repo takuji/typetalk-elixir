@@ -188,6 +188,12 @@ defmodule TypeTalk do
     get(auth, "search/accounts", [nameOrEmailAddress: name_or_email])
   end
 
+  # Talks
+
+  def talks(auth, topic_id) do
+    get(auth, "topics/#{topic_id}/talks")
+  end
+
   # Private functioins
 
   defp auth_header(auth) do
