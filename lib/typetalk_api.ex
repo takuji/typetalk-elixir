@@ -158,6 +158,16 @@ defmodule TypeTalk do
     put(auth, "mentions/#{mention_id}")
   end
 
+  # Spaces
+
+  def spaces(auth) do
+    get(auth, "spaces")
+  end
+
+  def space_members(auth, space_key) do
+    get(auth, "spaces/#{space_key}/members")
+  end
+
   # Private functioins
 
   defp auth_header(auth) do

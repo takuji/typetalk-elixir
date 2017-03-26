@@ -29,6 +29,11 @@ defmodule TypeTalkTestHelper do
     {:ok, res} = TypeTalk.topic_post(auth, topic["id"], post["id"])
     res
   end
+
+  def get_space(auth) do
+    {:ok, res} = TypeTalk.spaces(auth)
+    Enum.at(res["mySpaces"], 0)
+  end
 end
 
 ExUnit.start()
