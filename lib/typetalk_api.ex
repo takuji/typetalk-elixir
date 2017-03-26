@@ -148,6 +148,16 @@ defmodule TypeTalk do
     put(auth, "bookmarks", params)
   end
 
+  # Mentions
+
+  def mentions(auth, options \\ :empty) do
+    get(auth, "mentions", options)
+  end
+
+  def mark_mention_as_read(auth, mention_id) do
+    put(auth, "mentions/#{mention_id}")
+  end
+
   # Private functioins
 
   defp auth_header(auth) do
