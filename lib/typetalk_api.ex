@@ -41,8 +41,9 @@ defmodule TypeTalk do
     |> handle_response
   end
 
-  defp delete(auth, path) do
-    "#{@api_base}/#{path}"
+  defp delete(auth, path, params \\ :empty) do
+    data = if params == :empty, do: "", else: "?#{URI.encode_query(params)}"
+    "#{@api_base}/#{path}#{data}"
     |> HTTPoison.delete(auth_header(auth))
     |> handle_response
   end
@@ -209,6 +210,16 @@ defmodule TypeTalk do
 
   def delete_talk(auth, topic_id, talk_id) do
     delete(auth, "topics/#{topic_id}/talks/#{talk_id}")
+  end
+
+  def add_posts_to_talk(auth, topic_id, talk_id, post_ids) do
+    data = [postIds: Enum.join(post_ids, ",")]
+    post(auth, "topics/#{topic_id}/talks/#{talk_id}/posts", data)
+  end
+
+  def delete_posts_from_talk(auth, topic_id, talk_id, post_ids) do
+    data = [postIds: Enum.join(post_ids, ",")]
+    delete(auth, "topics/#{topic_id}/talks/#{talk_id}/posts", data)
   end
 
   # Private functioins

@@ -1,8 +1,8 @@
-defmodule TypeTalkTest do
+defmodule TypeTalkMentionsTest do
   use ExUnit.Case
   import TypeTalkTestHelper
 
-  test "get mensions" do
+  test "get mentions" do
     auth = access_token()
     {:ok, res} = TypeTalk.mentions(auth)
     assert res["mentions"] != nil

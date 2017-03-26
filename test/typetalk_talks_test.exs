@@ -1,4 +1,4 @@
-defmodule TypeTalkTest do
+defmodule TypeTalkTalksTest do
   use ExUnit.Case
   import TypeTalkTestHelper
 
@@ -18,7 +18,8 @@ defmodule TypeTalkTest do
     postIds = [post1["post"]["id"], post2["post"]["id"], post3["post"]["id"]]
     {:ok, res} = TypeTalk.create_talk(auth, topic["id"], "Talk-#{:os.system_time(:millisecond)}", postIds)
     assert res["talk"] != nil
-    
+    assert res["postIds"] == postIds
+
     {:ok, _} = TypeTalk.delete_talk(auth, topic["id"], res["talk"]["id"])
   end
 
@@ -48,5 +49,18 @@ defmodule TypeTalkTest do
     assert res["talk"]["name"] == new_name
 
     {:ok, _} = TypeTalk.delete_talk(auth, talk["topic"]["id"], talk["talk"]["id"])
+  end
+
+  test "add post to talk" do
+    auth = access_token(scope: "my,topic.post,topic.write,topic.delete")
+    topic = get_topic(auth)
+    {:ok, talk} = create_talk(auth, topic)
+    message = "New message #{:os.system_time(:millisecond)}"
+    {:ok, post} = TypeTalk.create_topic_post(auth, talk["topic"]["id"], message)
+    postIds = [post["post"]["id"]]
+    {:ok, res} = TypeTalk.add_posts_to_talk(auth, talk["topic"]["id"], talk["talk"]["id"], postIds)
+    assert res["postIds"] != nil
+
+    {:ok, _} = TypeTalk.delete_talk(auth, talk["topic"]["id"], talk["talk"]["id"])    
   end
 end

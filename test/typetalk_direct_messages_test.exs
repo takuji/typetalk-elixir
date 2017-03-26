@@ -1,4 +1,4 @@
-defmodule TypeTalkTest do
+defmodule TypeTalkDirectMessagesTest do
   use ExUnit.Case
   import TypeTalkTestHelper
 
