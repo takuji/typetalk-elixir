@@ -148,6 +148,11 @@ defmodule TypeTalk do
     put(auth, "bookmarks", params)
   end
 
+  def create_topic(auth, name, space_key, options \\ %{}) do
+    params = Enum.into(options, [name: name, spaceKey: space_key])
+    post(auth, "topics", params)
+  end
+
   # Mentions
 
   def mentions(auth, options \\ :empty) do
