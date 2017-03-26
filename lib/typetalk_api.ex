@@ -173,6 +173,17 @@ defmodule TypeTalk do
     get(auth, "spaces/#{space_key}/members")
   end
 
+  # Friends
+
+  def search_friends(auth, q, options \\ []) do
+    params = %{
+      q: q,
+      offset: Keyword.get(options, :offset, 0),
+      count: Keyword.get(options, :count, 30)
+    }
+    get(auth, "search/friends", params)
+  end
+
   # Private functioins
 
   defp auth_header(auth) do
