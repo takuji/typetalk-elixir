@@ -194,6 +194,15 @@ defmodule TypeTalk do
     get(auth, "topics/#{topic_id}/talks")
   end
 
+  def create_talk(auth, topic_id, name, post_ids) do
+    data = [talkName: name, postIds: Enum.join(post_ids, ",")]
+    post(auth, "topics/#{topic_id}/talks", data)
+  end
+
+  def talk_posts(auth, topic_id, talk_id) do
+    get(auth, "topics/#{topic_id}/talks/#{talk_id}/posts")
+  end
+
   # Private functioins
 
   defp auth_header(auth) do
