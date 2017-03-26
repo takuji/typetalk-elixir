@@ -203,6 +203,14 @@ defmodule TypeTalk do
     get(auth, "topics/#{topic_id}/talks/#{talk_id}/posts")
   end
 
+  def update_talk(auth, topic_id, talk_id, name) do
+    put(auth, "topics/#{topic_id}/talks/#{talk_id}", talkName: name)
+  end
+
+  def delete_talk(auth, topic_id, talk_id) do
+    delete(auth, "topics/#{topic_id}/talks/#{talk_id}")
+  end
+
   # Private functioins
 
   defp auth_header(auth) do
