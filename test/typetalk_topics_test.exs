@@ -34,4 +34,11 @@ defmodule TypeTalkTopicsTest do
 
     {:ok, _} = TypeTalk.delete_topic(auth, created["topic"]["id"])
   end
+
+  test "get topic details" do
+    auth = access_token()
+    topic = get_topic(auth)
+    {:ok, res} = TypeTalk.topic_details(auth, topic["id"])
+    assert res["topic"] != nil
+  end
 end

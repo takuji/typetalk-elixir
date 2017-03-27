@@ -174,6 +174,10 @@ defmodule TypeTalk do
     delete(auth, "topics/#{topic_id}")
   end
 
+  def topic_details(auth, topic_id) do
+    get(auth, "topics/#{topic_id}/details")
+  end
+
   # Mentions
 
   def mentions(auth, options \\ :empty) do
