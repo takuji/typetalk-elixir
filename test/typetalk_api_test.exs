@@ -57,7 +57,8 @@ defmodule TypeTalkTest do
     token = access_token()
     {:ok, profile} = TypeTalk.account_profile(token, "shimokawa")
     {status, json} = TypeTalk.accounts_status(token, [profile["account"]["id"]])
-    assert json["accounts"] != nil    
+    assert json["accounts"] != nil
+    assert length(json["accounts"]) == 1
   end
 
   test "topics" do

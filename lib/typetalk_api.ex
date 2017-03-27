@@ -33,6 +33,7 @@ defmodule TypeTalk do
       is_binary(params) -> params
       is_list(params) ->{:form, params}
       is_map(params) -> {:form, Enum.into(params, [])}
+      params == :empty -> ""
     end
     header = Map.merge(auth_header(auth), %{"Content-Type" => "application/x-www-form-urlencoded"})
     # data = if params == :empty, do: "", else: {:form, params}
