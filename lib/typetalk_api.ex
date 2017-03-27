@@ -178,6 +178,12 @@ defmodule TypeTalk do
     get(auth, "topics/#{topic_id}/details")
   end
 
+  # No test
+  def update_topic_members(auth, topic_id, params) do
+    # [:addAccountIds, :addGroupIds, :invitationEmails, :invitationRoles, :removeAccountIds, :cancelSpaceInvitation, :removeGroupIds]
+    post(auth, "topics/#{topic_id}/members/update", params)
+  end
+
   # Mentions
 
   def mentions(auth, options \\ :empty) do
