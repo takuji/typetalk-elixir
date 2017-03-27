@@ -160,6 +160,15 @@ defmodule TypeTalk do
     post(auth, "topics", params)
   end
 
+  @update_topic_options MapSet.new([:description])
+
+  def update_topic(auth, topic_id, name, options \\ []) do
+    data = options
+         |> Enum.filter(fn({k,v}) -> MapSet.member?(@update_topic_options, k) end)
+         |> Keyword.merge([name: name])
+    put(auth, "topics/#{topic_id}", data)
+  end
+
   def delete_topic(auth, topic_id) do
     delete(auth, "topics/#{topic_id}")
   end

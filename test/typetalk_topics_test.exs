@@ -19,4 +19,19 @@ defmodule TypeTalkTopicsTest do
     {:ok, deleted} = TypeTalk.delete_topic(auth, created["topic"]["id"])
     assert deleted["id"] == created["topic"]["id"]
   end
+
+  test "update a topic" do
+    auth = access_token(scope: "my,topic.write,topic.delete")
+    name = "TEST TOPIC #{:os.system_time(:millisecond)}"
+    space = get_space(auth)
+    {:ok, created} = TypeTalk.create_topic(auth, name, space["space"]["key"])
+    assert created["topic"] != nil
+    
+    name = created["topic"]["name"] <> ":updated"
+    description = "Updated description"
+    {:ok, updated} = TypeTalk.update_topic(auth, created["topic"]["id"], name, description: description)
+    assert updated["topic"]["name"] == name
+
+    {:ok, _} = TypeTalk.delete_topic(auth, created["topic"]["id"])
+  end
 end
