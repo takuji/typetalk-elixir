@@ -135,6 +135,11 @@ defmodule TypeTalk do
     get(auth, "messages/#{account}", data)
   end
 
+  def post_direct_message(auth, account_name, message, options) do
+    data = options |> Keyword.merge([message: message])
+    post(auth, "messages/@#{account_name}", data)
+  end
+
   # Notifications
 
   def notifications(auth) do
