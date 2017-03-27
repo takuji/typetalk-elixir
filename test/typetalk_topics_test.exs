@@ -9,11 +9,14 @@ defmodule TypeTalkTopicsTest do
     assert res["unread"] != nil
   end
 
-  test "create a topic" do
-    auth = access_token(scope: "my,topic.write")
+  test "create and delete a topic" do
+    auth = access_token(scope: "my,topic.write,topic.delete")
     name = "TEST TOPIC #{:os.system_time(:millisecond)}"
     space = get_space(auth)
-    {:ok, res} = TypeTalk.create_topic(auth, name, space["space"]["key"])
-    assert res["topic"] != nil
+    {:ok, created} = TypeTalk.create_topic(auth, name, space["space"]["key"])
+    assert created["topic"] != nil
+    
+    {:ok, deleted} = TypeTalk.delete_topic(auth, created["topic"]["id"])
+    assert deleted["id"] == created["topic"]["id"]
   end
 end

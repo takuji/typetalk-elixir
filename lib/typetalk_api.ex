@@ -160,6 +160,10 @@ defmodule TypeTalk do
     post(auth, "topics", params)
   end
 
+  def delete_topic(auth, topic_id) do
+    delete(auth, "topics/#{topic_id}")
+  end
+
   # Mentions
 
   def mentions(auth, options \\ :empty) do
