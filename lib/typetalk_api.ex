@@ -55,25 +55,45 @@ defmodule TypeTalk do
     |> handle_response
   end
 
+  @doc """
+  Takes necessary information for authentication and returns an access token and related information.
+
+  ## Example
+      TypeTalk.access_token(client_id: "xxxxxxxxxxxxxxxx",
+                            client_secret: "************************",
+                            scope: "my,topic.read,topic.post")
+  """
   def access_token(auth) do
     params = {:form, Keyword.merge(@default_params, auth)}
     HTTPoison.post("https://typetalk.in/oauth2/access_token", params)
     |> handle_response
   end
 
+  @doc """
+  Returns the profile of the caller.
+  """
   def profile(auth) do
     get(auth, "profile")
   end
 
+  @doc """
+  Returns the profile of the given account name.
+  """
   def account_profile(auth, account_name) do
     get(auth, "accounts/profile/#{account_name}")
   end
 
-  def accounts_status(auth, accounts \\ []) do
-    q = Enum.join(accounts, ",")
+  @doc """
+  Returns the online status of accounts
+  """
+  def accounts_status(auth, account_ids) do
+    q = Enum.join(account_ids, ",")
     get(auth, "accounts/status", %{"accountIds" => q})
   end
 
+  @doc """
+  Returns the topics
+  """
   def topics(auth) do
     get(auth, "topics")
   end
