@@ -126,6 +126,10 @@ defmodule TypeTalk do
     post(auth, "topics/#{topic_id}", params)
   end
 
+  def upload_attachment(auth, topic_id, filepath) do
+    post_file(auth, "topics/#{topic_id}/attachments", filepath)
+  end
+
   def topic_members(auth, topic_id) do
     get(auth, "topics/#{topic_id}/members/status")
   end
