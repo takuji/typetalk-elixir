@@ -6,11 +6,9 @@ defmodule TypeTalkTest do
   @client_secret System.get_env("TYPETALK_CLIENT_SECRET")
 
   defp access_token(options \\ []) do
-    {:ok, json} = TypeTalk.Auth.access_token(
-      client_id: @client_id,
-      client_secret: @client_secret,
-      scope: Keyword.get(options, :scope, "my,topic.read,topic.post")
-    )
+    {:ok, json} = TypeTalk.ClientCredential.access_token(@client_id,
+                                                         @client_secret,
+                                                         Keyword.get(options, :scope, "my,topic.read,topic.post"))
     json    
   end
 
@@ -31,14 +29,6 @@ defmodule TypeTalkTest do
     post = Enum.at(posts["posts"], 0)
     {:ok, res} = TypeTalk.get_message(auth, topic["id"], post["id"])
     res
-  end
-
-  test "access_token" do
-    {:ok, json} = TypeTalk.Auth.access_token(
-      client_id: @client_id,
-      client_secret: @client_secret
-    )
-    assert json["access_token"] != nil
   end
 
   test "get profile" do
