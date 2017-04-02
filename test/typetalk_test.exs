@@ -126,20 +126,20 @@ defmodule TypeTalkTest do
 
   # Like
 
-  test "create like" do
+  test "like message" do
     auth = access_token()
     post = get_message(auth)
-    TypeTalk.delete_like(auth, post["topic"]["id"], post["post"]["id"])
-    {:ok, res} = TypeTalk.create_like(auth, post["topic"]["id"], post["post"]["id"])
+    TypeTalk.unlike_message(auth, post["topic"]["id"], post["post"]["id"])
+    {:ok, res} = TypeTalk.like_message(auth, post["topic"]["id"], post["post"]["id"])
     assert res["like"] != nil
   end
 
-  test "delete like" do
+  test "unlike message" do
     auth = access_token()
     post = get_message(auth)
-    TypeTalk.delete_like(auth, post["topic"]["id"], post["post"]["id"])
-    {:ok, _}   = TypeTalk.create_like(auth, post["topic"]["id"], post["post"]["id"])
-    {:ok, res} = TypeTalk.delete_like(auth, post["topic"]["id"], post["post"]["id"])
+    TypeTalk.unlike_message(auth, post["topic"]["id"], post["post"]["id"])
+    {:ok, _}   = TypeTalk.like_message(auth, post["topic"]["id"], post["post"]["id"])
+    {:ok, res} = TypeTalk.unlike_message(auth, post["topic"]["id"], post["post"]["id"])
     assert res["like"] != nil
   end
 
@@ -150,7 +150,7 @@ defmodule TypeTalkTest do
     topic = get_topic(auth)
     TypeTalk.delete_from_favorite(auth, topic["id"])
 
-    {:ok, res} = TypeTalk.add_to_favorite(auth, topic["id"])
+    {:ok, res} = TypeTalk.favorite_topic(auth, topic["id"])
     assert res["favorite"] == true
   end
 
@@ -159,7 +159,7 @@ defmodule TypeTalkTest do
     topic = get_topic(auth)
     TypeTalk.delete_from_favorite(auth, topic["id"])
     
-    {:ok, _} = TypeTalk.add_to_favorite(auth, topic["id"])
+    {:ok, _} = TypeTalk.favorite_topic(auth, topic["id"])
     {:ok, res} = TypeTalk.delete_from_favorite(auth, topic["id"])
     assert res["favorite"] == false
   end

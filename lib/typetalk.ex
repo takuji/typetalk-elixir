@@ -197,17 +197,27 @@ defmodule TypeTalk do
 
   # Like
 
-  def create_like(auth, topic_id, post_id) do
+  @doc """
+  Give a like to a message.
+
+  [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/like-message)
+  """
+  def like_message(auth, topic_id, post_id) do
     post(auth, "topics/#{topic_id}/posts/#{post_id}/like")
   end
 
-  def delete_like(auth, topic_id, post_id) do
+  @doc """
+  Delete a like from a message.
+
+  [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/unlike-message)
+  """
+  def unlike_message(auth, topic_id, post_id) do
     delete(auth, "topics/#{topic_id}/posts/#{post_id}/like")    
   end
 
   # Favorite topic
 
-  def add_to_favorite(auth, topic_id) do
+  def favorite_topic(auth, topic_id) do
     post(auth, "topics/#{topic_id}/favorite")
   end
 
