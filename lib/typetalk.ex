@@ -105,7 +105,7 @@ defmodule TypeTalk do
   end
 
   @doc """
-  Returns the online status of accounts
+  Returns the online status of accounts.
   """
   def get_online_status(auth, account_ids) do
     q = Enum.join(account_ids, ",")
@@ -113,46 +113,85 @@ defmodule TypeTalk do
   end
 
   @doc """
-  Returns the topics
+  Returns the topics.
   """
   def get_topics(auth) do
     get(auth, "topics")
   end
 
-  def messages(auth) do
+  @doc """
+  Returns direct message topics.
+  """
+  def get_dm_topics(auth) do
     get(auth, "messages")
   end
 
-  def topic_posts(auth, topic_id) do
+  @doc """
+  Returns messages of a topic.
+  """
+  def get_messages(auth, topic_id) do
     get(auth, "topics/#{topic_id}")
   end
 
-  def create_topic_post(auth, topic_id, message, options \\ []) do
+  @doc """
+  Post a message to a topic.
+  """
+  def post_message(auth, topic_id, message, options \\ []) do
     params = options |> Keyword.merge([message: message])
     post(auth, "topics/#{topic_id}", params)
   end
 
+  # Attachment
+
+  @doc """
+  Upload an attachment file.
+  """
   def upload_attachment(auth, topic_id, filepath) do
     post_file(auth, "topics/#{topic_id}/attachments", filepath)
   end
 
+  @doc """
+  Download an attachment file.
+  """
   def download_attachment(auth, topic_id, post_id, attachment_id, filename) do
     get(auth, "topics/#{topic_id}/posts/#{post_id}/attachments/#{attachment_id}/#{filename}")
   end
 
-  def topic_members(auth, topic_id) do
+  # Topic
+
+  @doc """
+  Returns topic members.
+
+  [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-topic-members)
+  """
+  def get_topic_members(auth, topic_id) do
     get(auth, "topics/#{topic_id}/members/status")
   end
 
-  def topic_post(auth, topic_id, post_id) do
+  @doc """
+  Returns a topic message.
+
+  [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-message)
+  """
+  def get_message(auth, topic_id, post_id) do
     get(auth, "topics/#{topic_id}/posts/#{post_id}")
   end
 
-  def update_topic_post(auth, topic_id, post_id, message) do
+  @doc """
+  Update a topic message.
+
+  [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/update-message)
+  """
+  def update_message(auth, topic_id, post_id, message) do
     put(auth, "topics/#{topic_id}/posts/#{post_id}", %{"message" => message})
   end
 
-  def delete_topic_post(auth, topic_id, post_id) do
+  @doc """
+  Delete a topic message.
+
+  [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/delete-message)
+  """
+  def delete_message(auth, topic_id, post_id) do
     delete(auth, "topics/#{topic_id}/posts/#{post_id}")
   end
 

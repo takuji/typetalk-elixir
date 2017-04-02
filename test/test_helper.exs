@@ -17,16 +17,16 @@ defmodule TypeTalkTestHelper do
     topic["topic"]
   end
 
-  def get_topic_posts(auth, topic_id) do
-    {:ok, res} = TypeTalk.topic_posts(auth, topic_id)
+  def get_messages(auth, topic_id) do
+    {:ok, res} = TypeTalk.get_messages(auth, topic_id)
     res
   end
 
-  def get_topic_post(auth) do
+  def get_message(auth) do
     topic = get_topic(auth)
-    posts = get_topic_posts(auth, topic["id"])
+    posts = get_messages(auth, topic["id"])
     post = Enum.at(posts["posts"], 0)
-    {:ok, res} = TypeTalk.topic_post(auth, topic["id"], post["id"])
+    {:ok, res} = TypeTalk.get_message(auth, topic["id"], post["id"])
     res
   end
 

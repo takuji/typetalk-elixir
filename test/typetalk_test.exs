@@ -20,16 +20,16 @@ defmodule TypeTalkTest do
     topic["topic"]
   end
 
-  defp get_topic_posts(auth, topic_id) do
-    {:ok, res} = TypeTalk.topic_posts(auth, topic_id)
+  defp get_messages(auth, topic_id) do
+    {:ok, res} = TypeTalk.get_messages(auth, topic_id)
     res
   end
 
-  defp get_topic_post(auth) do
+  defp get_message(auth) do
     topic = get_topic(auth)
-    posts = get_topic_posts(auth, topic["id"])
+    posts = get_messages(auth, topic["id"])
     post = Enum.at(posts["posts"], 0)
-    {:ok, res} = TypeTalk.topic_post(auth, topic["id"], post["id"])
+    {:ok, res} = TypeTalk.get_message(auth, topic["id"], post["id"])
     res
   end
 
@@ -61,22 +61,22 @@ defmodule TypeTalkTest do
     assert length(json["accounts"]) == 1
   end
 
-  test "topics" do
+  test "get topics" do
     token = access_token()
     {:ok, res} = TypeTalk.get_topics(token)
     assert res["topics"] != nil
   end
 
-  test "messages" do
+  test "get direct message topics" do
     token = access_token()
-    {:ok, res} = TypeTalk.messages(token)
+    {:ok, res} = TypeTalk.get_dm_topics(token)
     assert res["topics"] != nil
   end
 
   test "topic posts" do
     token = access_token()
     topic = get_topic(token)
-    {:ok, res} = TypeTalk.topic_posts(token, topic["id"])
+    {:ok, res} = TypeTalk.get_messages(token, topic["id"])
     assert res["posts"] != nil
   end
 
@@ -85,42 +85,42 @@ defmodule TypeTalkTest do
     topic = get_topic(auth)
     topic_id = topic["id"]
     message = "なんでやねん #{:os.system_time(:millisecond)}"
-    {:ok, res} = TypeTalk.create_topic_post(auth, topic_id, message)
+    {:ok, res} = TypeTalk.post_message(auth, topic_id, message)
     assert res["post"]["message"] == message
   end
 
   test "topic members" do
     token = access_token()
     topic = get_topic(token)
-    {:ok, res} = TypeTalk.topic_members(token, topic["id"])
+    {:ok, res} = TypeTalk.get_topic_members(token, topic["id"])
     assert res["accounts"] != nil
   end
 
   test "topic post" do
     token = access_token()
     topic = get_topic(token)
-    {:ok, res} = TypeTalk.topic_posts(token, topic["id"])
+    {:ok, res} = TypeTalk.get_messages(token, topic["id"])
     post = Enum.at(res["posts"], 0)
-    {:ok, res} = TypeTalk.topic_post(token, topic["id"], post["id"])
+    {:ok, res} = TypeTalk.get_message(token, topic["id"], post["id"])
     assert res["post"] != nil
   end
 
   test "update topic post" do
     token = access_token()
     topic = get_topic(token)
-    {:ok, res} = TypeTalk.topic_posts(token, topic["id"])
+    {:ok, res} = TypeTalk.get_messages(token, topic["id"])
     post = Enum.at(res["posts"], 0)
     message = post["message"]
     new_message = message <> " a"
-    {:ok, res} = TypeTalk.update_topic_post(token, topic["id"], post["id"], new_message)
+    {:ok, res} = TypeTalk.update_message(token, topic["id"], post["id"], new_message)
     assert res["post"]["message"] == new_message
   end
 
   test "delete topic post" do
     auth = access_token()
     topic = get_topic(auth)
-    {:ok, created} = TypeTalk.create_topic_post(auth, topic["id"], "Hello")
-    {:ok, deleted} = TypeTalk.delete_topic_post(auth, topic["id"], created["post"]["id"])
+    {:ok, created} = TypeTalk.post_message(auth, topic["id"], "Hello")
+    {:ok, deleted} = TypeTalk.delete_message(auth, topic["id"], created["post"]["id"])
     assert deleted["id"] == created["post"]["id"]
   end
 
@@ -128,7 +128,7 @@ defmodule TypeTalkTest do
 
   test "create like" do
     auth = access_token()
-    post = get_topic_post(auth)
+    post = get_message(auth)
     TypeTalk.delete_like(auth, post["topic"]["id"], post["post"]["id"])
     {:ok, res} = TypeTalk.create_like(auth, post["topic"]["id"], post["post"]["id"])
     assert res["like"] != nil
@@ -136,7 +136,7 @@ defmodule TypeTalkTest do
 
   test "delete like" do
     auth = access_token()
-    post = get_topic_post(auth)
+    post = get_message(auth)
     TypeTalk.delete_like(auth, post["topic"]["id"], post["post"]["id"])
     {:ok, _}   = TypeTalk.create_like(auth, post["topic"]["id"], post["post"]["id"])
     {:ok, res} = TypeTalk.delete_like(auth, post["topic"]["id"], post["post"]["id"])
