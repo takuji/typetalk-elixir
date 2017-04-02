@@ -12,7 +12,7 @@ defmodule TypeTalk.Streaming do
     Socket.Web.close(socket)
   end
 
-  def receive(socket) do
+  def read(socket) do
     case Socket.Web.recv(socket) do
       {:ok, {:text, text}} ->
         case Poison.decode(text) do
@@ -21,7 +21,7 @@ defmodule TypeTalk.Streaming do
         end
       {:ok, {:ping, _}} ->
         Socket.Web.send!(socket, {:pong, ""})
-        TypeTalk.Streaming.receive(socket)
+        read(socket)
       {_, res} ->
         {:error, res}
     end

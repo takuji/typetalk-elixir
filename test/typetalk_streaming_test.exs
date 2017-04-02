@@ -6,7 +6,7 @@ defmodule TypeTalkStreamingTest do
     auth = access_token()
     topic = get_topic(auth)
     {:ok, socket} = TypeTalk.Streaming.connect(auth)
-    t = Task.async(fn -> TypeTalk.Streaming.receive(socket) end)
+    t = Task.async(fn -> TypeTalk.Streaming.read(socket) end)
     # Send a message
     message = "Streeeeeeeeeeeeeeem! #{:os.system_time(:millisecond)}"
     spawn(fn -> TypeTalk.post_message(auth, topic["id"], message) end)
