@@ -5,21 +5,7 @@ defmodule TypeTalk do
   Documentation for TypeTalk.
   """
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> TypeTalk.hello
-      :world
-
-  """
-  def hello do
-    :world
-  end
-
   @api_base "https://typetalk.in/api/v1"
-  @default_params [grant_type: "client_credentials", scope: "my,topic.read,topi.post"]
 
   defp get(auth, path, params \\ :empty) do
     case params do
@@ -69,22 +55,6 @@ defmodule TypeTalk do
     data = if params == :empty, do: "", else: "?#{URI.encode_query(params)}"
     "#{@api_base}/#{path}#{data}"
     |> HTTPoison.delete(auth_header(auth))
-    |> handle_response
-  end
-
-  @doc """
-  Returns an access token and related information.
-
-  ## Example
-      {:ok, auth} = TypeTalk.access_token(client_id: "xxxxxxxxxxxxxxxx",
-                                          client_secret: "************************",
-                                          scope: "my,topic.read,topic.post")
-  ## API Doc
-  [https://developer.nulab-inc.com/docs/typetalk/auth#client](https://developer.nulab-inc.com/docs/typetalk/auth#client)
-  """
-  def access_token(auth) do
-    params = {:form, Keyword.merge(@default_params, auth)}
-    HTTPoison.post("https://typetalk.in/oauth2/access_token", params)
     |> handle_response
   end
 
@@ -377,18 +347,5 @@ defmodule TypeTalk do
   def delete_messages_from_talk(auth, topic_id, talk_id, post_ids) do
     data = [postIds: Enum.join(post_ids, ",")]
     delete(auth, "topics/#{topic_id}/talks/#{talk_id}/posts", data)
-  end
-
-  # Private functioins
-
-  defp handle_response({:ok, res}) do
-    case res.status_code do
-      200 -> Poison.decode(res.body)
-      _ -> {:error, res}
-    end
-  end
-
-  defp handle_response({_, err}) do
-    {:error, err}
   end
 end

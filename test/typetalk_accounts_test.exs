@@ -1,4 +1,4 @@
-defmodule TypeTalkAccountsTest do
+defmodule TypeTalkTest do
   use ExUnit.Case
   import TypeTalkTestHelper
 
@@ -12,6 +12,5 @@ defmodule TypeTalkAccountsTest do
     auth = access_token()
     {:ok, res} = TypeTalk.search_account(auth, "shimokawa")
     assert res["id"] != nil
-    IO.inspect res
   end
 end
