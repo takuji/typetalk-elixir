@@ -14,6 +14,5 @@ defmodule TypeTalkMentionsTest do
     mention = Enum.at(res["mentions"], 0)
     {:ok, res} = TypeTalk.mark_mention_as_read(auth, mention["id"])
     assert res["mention"] != nil
-    IO.puts res["mention"]["readAt"]
   end
 end

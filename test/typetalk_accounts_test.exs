@@ -1,4 +1,4 @@
-defmodule TypeTalkTest do
+defmodule TypeTalkAccountsTest do
   use ExUnit.Case
   import TypeTalkTestHelper
 

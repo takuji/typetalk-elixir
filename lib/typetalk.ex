@@ -7,11 +7,16 @@ defmodule TypeTalk do
 
   @api_base "https://typetalk.in/api/v1"
 
-  defp get(auth, path, params \\ :empty) do
-    case params do
-      :empty -> "#{@api_base}/#{path}"
-      _ -> "#{@api_base}/#{path}?#{URI.encode_query(params)}"
-    end
+  defp get(auth, path) do
+    _get(auth, "#{@api_base}/#{path}")
+  end
+
+  defp get(auth, path, params) do
+     _get(auth, "#{@api_base}/#{path}?#{URI.encode_query(params)}")
+  end
+
+  defp _get(auth, url) do
+    url
     |> HTTPoison.get(auth_header(auth))
     |> handle_response
   end
@@ -44,16 +49,30 @@ defmodule TypeTalk do
     |> handle_response
   end
 
-  defp put(auth, path, params \\ :empty) do
-    data = if params == :empty, do: "", else: "?#{URI.encode_query(params)}"
-    "#{@api_base}/#{path}#{data}"
+  defp put(auth, path) do
+    _put(auth, "#{@api_base}/#{path}")
+  end
+
+  defp put(auth, path, params) do
+    _put(auth, "#{@api_base}/#{path}?#{URI.encode_query(params)}")
+  end
+
+  defp _put(auth, url) do
+    url 
     |> HTTPoison.put("", auth_header(auth))
     |> handle_response
   end
 
-  defp delete(auth, path, params \\ :empty) do
-    data = if params == :empty, do: "", else: "?#{URI.encode_query(params)}"
-    "#{@api_base}/#{path}#{data}"
+  defp delete(auth, path) do
+    _delete(auth, "#{@api_base}/#{path}")
+  end
+
+  defp delete(auth, path, params) do
+    _delete(auth, "#{@api_base}/#{path}?#{URI.encode_query(params)}")
+  end
+
+  defp _delete(auth, url) do
+    url
     |> HTTPoison.delete(auth_header(auth))
     |> handle_response
   end
@@ -244,7 +263,11 @@ defmodule TypeTalk do
 
   # Mentions
 
-  def get_mentions(auth, options \\ :empty) do
+  def get_mentions(auth) do
+    get(auth, "mentions")
+  end
+
+  def get_mentions(auth, options) do
     get(auth, "mentions", options)
   end
 
@@ -254,9 +277,12 @@ defmodule TypeTalk do
 
   # Topics
 
-  def mark_topic_as_read(auth, topic_id, post_id \\ nil) do
-    params = if post_id == nil, do: [topicId: topic_id], else: [topicId: topic_id, postId: post_id]
-    put(auth, "bookmarks", params)
+  def mark_topic_as_read(auth, topic_id) do
+    put(auth, "bookmarks", topicId: topic_id)
+  end
+
+  def mark_topic_as_read(auth, topic_id, post_id) do
+    put(auth, "bookmarks", topicId: topic_id, postId: post_id)
   end
 
   def create_topic(auth, name, space_key, options \\ %{}) do
