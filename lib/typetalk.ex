@@ -73,12 +73,14 @@ defmodule TypeTalk do
   end
 
   @doc """
-  Takes necessary information for authentication and returns an access token and related information.
+  Returns an access token and related information.
 
   ## Example
-      TypeTalk.access_token(client_id: "xxxxxxxxxxxxxxxx",
-                            client_secret: "************************",
-                            scope: "my,topic.read,topic.post")
+      {:ok, auth} = TypeTalk.access_token(client_id: "xxxxxxxxxxxxxxxx",
+                                          client_secret: "************************",
+                                          scope: "my,topic.read,topic.post")
+  ## API Doc
+  [https://developer.nulab-inc.com/docs/typetalk/auth#client](https://developer.nulab-inc.com/docs/typetalk/auth#client)
   """
   def access_token(auth) do
     params = {:form, Keyword.merge(@default_params, auth)}
@@ -88,22 +90,24 @@ defmodule TypeTalk do
 
   @doc """
   Returns the profile of the caller.
+  ## API Doc
+  [https://developer.nulab-inc.com/docs/typetalk/api/1/get-profile](https://developer.nulab-inc.com/docs/typetalk/api/1/get-profile)
   """
-  def profile(auth) do
+  def get_profile(auth) do
     get(auth, "profile")
   end
 
   @doc """
   Returns the profile of the given account name.
   """
-  def account_profile(auth, account_name) do
+  def get_friend_profile(auth, account_name) do
     get(auth, "accounts/profile/#{account_name}")
   end
 
   @doc """
   Returns the online status of accounts
   """
-  def accounts_status(auth, account_ids) do
+  def get_online_status(auth, account_ids) do
     q = Enum.join(account_ids, ",")
     get(auth, "accounts/status", %{"accountIds" => q})
   end
@@ -111,7 +115,7 @@ defmodule TypeTalk do
   @doc """
   Returns the topics
   """
-  def topics(auth) do
+  def get_topics(auth) do
     get(auth, "topics")
   end
 
@@ -215,7 +219,7 @@ defmodule TypeTalk do
 
   def update_topic(auth, topic_id, name, options \\ []) do
     data = options
-         |> Enum.filter(fn({k,v}) -> MapSet.member?(@update_topic_options, k) end)
+         |> Enum.filter(fn({k,_v}) -> MapSet.member?(@update_topic_options, k) end)
          |> Keyword.merge([name: name])
     put(auth, "topics/#{topic_id}", data)
   end

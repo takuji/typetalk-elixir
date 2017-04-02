@@ -15,7 +15,7 @@ defmodule TypeTalkTest do
   end
 
   defp get_topic(auth) do
-    {:ok, res} = TypeTalk.topics(auth)
+    {:ok, res} = TypeTalk.get_topics(auth)
     topic = Enum.at(res["topics"], 0)
     topic["topic"]
   end
@@ -41,29 +41,29 @@ defmodule TypeTalkTest do
     assert json["access_token"] != nil
   end
 
-  test "profile" do
+  test "get profile" do
     token = access_token()
-    {:ok, profile} = TypeTalk.profile(token)
+    {:ok, profile} = TypeTalk.get_profile(token)
     assert profile["account"] != nil
   end
 
-  test "account profile" do
+  test "get friend profile" do
     token = access_token()
-    {:ok, profile} = TypeTalk.account_profile(token, "shimokawa")
+    {:ok, profile} = TypeTalk.get_friend_profile(token, "shimokawa")
     assert profile["account"] != nil    
   end
 
-  test "account status" do
+  test "get online status" do
     token = access_token()
-    {:ok, profile} = TypeTalk.account_profile(token, "shimokawa")
-    {status, json} = TypeTalk.accounts_status(token, [profile["account"]["id"]])
+    {:ok, profile} = TypeTalk.get_friend_profile(token, "shimokawa")
+    {_, json} = TypeTalk.get_online_status(token, [profile["account"]["id"]])
     assert json["accounts"] != nil
     assert length(json["accounts"]) == 1
   end
 
   test "topics" do
     token = access_token()
-    {:ok, res} = TypeTalk.topics(token)
+    {:ok, res} = TypeTalk.get_topics(token)
     assert res["topics"] != nil
   end
 
@@ -159,7 +159,7 @@ defmodule TypeTalkTest do
     topic = get_topic(auth)
     TypeTalk.delete_from_favorite(auth, topic["id"])
     
-    {:ok, res} = TypeTalk.add_to_favorite(auth, topic["id"])
+    {:ok, _} = TypeTalk.add_to_favorite(auth, topic["id"])
     {:ok, res} = TypeTalk.delete_from_favorite(auth, topic["id"])
     assert res["favorite"] == false
   end

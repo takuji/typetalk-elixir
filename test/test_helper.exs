@@ -12,7 +12,7 @@ defmodule TypeTalkTestHelper do
   end
 
   def get_topic(auth) do
-    {:ok, res} = TypeTalk.topics(auth)
+    {:ok, res} = TypeTalk.get_topics(auth)
     topic = Enum.at(res["topics"], 0)
     topic["topic"]
   end
