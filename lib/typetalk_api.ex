@@ -1,4 +1,6 @@
 defmodule TypeTalk do
+  import TypeTalk.Util
+  
   @moduledoc """
   Documentation for TypeTalk.
   """
@@ -305,10 +307,6 @@ defmodule TypeTalk do
   end
 
   # Private functioins
-
-  defp auth_header(auth) do
-    %{"Authorization" => "Bearer #{auth["access_token"]}"}
-  end
 
   defp handle_response({:ok, res}) do
     case res.status_code do

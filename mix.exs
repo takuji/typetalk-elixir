@@ -31,7 +31,8 @@ defmodule TypeTalk.Mixfile do
     [
       {:credo, "~> 0.7", only: [:dev, :test]},
       {:httpoison, "~> 0.11.1"},
-      {:poison, "~> 3.1"}
+      {:poison, "~> 3.1"},
+      {:socket, "~> 0.3"}
     ]
   end
 end
