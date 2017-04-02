@@ -28,16 +28,31 @@ defmodule TypeTalk do
     |> handle_response
   end
 
-  defp post(auth, path, params \\ :empty) do
-    data = cond do
-      is_binary(params) -> params
-      is_list(params) ->{:form, params}
-      is_map(params) -> {:form, Enum.into(params, [])}
-      params == :empty -> ""
-    end
+  defp post(auth, path) do
     header = Map.merge(auth_header(auth), %{"Content-Type" => "application/x-www-form-urlencoded"})
-    # data = if params == :empty, do: "", else: {:form, params}
-    HTTPoison.post("#{@api_base}/#{path}", data, header)
+    HTTPoison.post("#{@api_base}/#{path}", "", header)
+    |> handle_response
+  end
+
+  defp post(auth, path, params) when is_binary(params) do
+    header = Map.merge(auth_header(auth), %{"Content-Type" => "application/x-www-form-urlencoded"})
+    HTTPoison.post("#{@api_base}/#{path}", params, header)
+    |> handle_response
+  end
+
+  defp post(auth, path, params) when is_list(params) do
+    HTTPoison.post("#{@api_base}/#{path}", {:form, params}, auth_header(auth))
+    |> handle_response
+  end
+
+  defp post(auth, path, params) when is_map(params) do
+    HTTPoison.post("#{@api_base}/#{path}", {:form, Enum.into(params, [])}, auth_header(auth))
+    |> handle_response
+  end
+
+  defp post_file(auth, path, file) when is_binary(file) do
+    data = {:multipart, [{:file, file}]}
+    HTTPoison.post("#{@api_base}/#{path}", data, auth_header(auth))
     |> handle_response
   end
 
