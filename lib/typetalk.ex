@@ -60,8 +60,8 @@ defmodule TypeTalk do
 
   @doc """
   Returns the profile of the caller.
-  ## API Doc
-  [https://developer.nulab-inc.com/docs/typetalk/api/1/get-profile](https://developer.nulab-inc.com/docs/typetalk/api/1/get-profile)
+
+  [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-profile)
   """
   def get_profile(auth) do
     get(auth, "profile")
