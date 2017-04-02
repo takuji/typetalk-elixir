@@ -130,6 +130,10 @@ defmodule TypeTalk do
     post_file(auth, "topics/#{topic_id}/attachments", filepath)
   end
 
+  def download_attachment(auth, topic_id, post_id, attachment_id, filename) do
+    get(auth, "topics/#{topic_id}/posts/#{post_id}/attachments/#{attachment_id}/#{filename}")
+  end
+
   def topic_members(auth, topic_id) do
     get(auth, "topics/#{topic_id}/members/status")
   end
