@@ -31,7 +31,7 @@ defmodule TypeTalkTestHelper do
   end
 
   def get_space(auth) do
-    {:ok, res} = TypeTalk.spaces(auth)
+    {:ok, res} = TypeTalk.get_spaces(auth)
     Enum.at(res["mySpaces"], 0)
   end
 end

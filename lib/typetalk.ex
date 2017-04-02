@@ -217,22 +217,42 @@ defmodule TypeTalk do
 
   # Favorite topic
 
+  @doc """
+  Mark a topic as favorite.
+
+  [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/favorite-topic)
+  """
   def favorite_topic(auth, topic_id) do
     post(auth, "topics/#{topic_id}/favorite")
   end
 
-  def delete_from_favorite(auth, topic_id) do
+  @doc """
+  Remove a topic from favorite.
+
+  [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/unfavorite-topic)
+  """
+  def unfavorite_topic(auth, topic_id) do
     delete(auth, "topics/#{topic_id}/favorite")
   end
 
   # Direct messages
 
-  def messages_of_account(auth, account_name, options \\ []) do
+  @doc """
+  Get direct messages from an account.
+
+  [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-direct-messages)
+  """
+  def get_direct_messages(auth, account_name, options \\ []) do
     data = Keyword.merge([direction: "forward"], options)
     account = URI.encode("@#{account_name}")
     get(auth, "messages/#{account}", data)
   end
 
+  @doc """
+  Post a direct message.
+
+  [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/post-direct-message)
+  """
   def post_direct_message(auth, account_name, message, options) do
     data = options |> Keyword.merge([message: message])
     post(auth, "messages/@#{account_name}", data)
@@ -240,16 +260,26 @@ defmodule TypeTalk do
 
   # Notifications
 
-  def notifications(auth) do
+  def get_notifications(auth) do
     get(auth, "notifications")
   end
 
-  def notifications_status(auth) do
+  def get_notification_status(auth) do
     get(auth, "notifications/status")
   end
 
   def mark_notifications_as_read(auth) do
     put(auth, "notifications")    
+  end
+
+  # Mentions
+
+  def get_mentions(auth, options \\ :empty) do
+    get(auth, "mentions", options)
+  end
+
+  def mark_mention_as_read(auth, mention_id) do
+    put(auth, "mentions/#{mention_id}")
   end
 
   # Topics
@@ -277,7 +307,7 @@ defmodule TypeTalk do
     delete(auth, "topics/#{topic_id}")
   end
 
-  def topic_details(auth, topic_id) do
+  def get_topic_details(auth, topic_id) do
     get(auth, "topics/#{topic_id}/details")
   end
 
@@ -287,23 +317,13 @@ defmodule TypeTalk do
     post(auth, "topics/#{topic_id}/members/update", params)
   end
 
-  # Mentions
-
-  def mentions(auth, options \\ :empty) do
-    get(auth, "mentions", options)
-  end
-
-  def mark_mention_as_read(auth, mention_id) do
-    put(auth, "mentions/#{mention_id}")
-  end
-
   # Spaces
 
-  def spaces(auth) do
+  def get_spaces(auth) do
     get(auth, "spaces")
   end
 
-  def space_members(auth, space_key) do
+  def get_space_members(auth, space_key) do
     get(auth, "spaces/#{space_key}/members")
   end
 
@@ -324,8 +344,12 @@ defmodule TypeTalk do
 
   # Talks
 
-  def talks(auth, topic_id) do
+  def get_talks(auth, topic_id) do
     get(auth, "topics/#{topic_id}/talks")
+  end
+
+  def get_talk_messages(auth, topic_id, talk_id) do
+    get(auth, "topics/#{topic_id}/talks/#{talk_id}/posts")
   end
 
   def create_talk(auth, topic_id, name, post_ids) do
@@ -333,10 +357,6 @@ defmodule TypeTalk do
          |> Enum.reduce(%{"talkName" => name}, fn ({post_id, idx}, acc) -> Map.put(acc, "postIds[#{idx}]", post_id) end)
          |> URI.encode_query()
     post(auth, "topics/#{topic_id}/talks", data)
-  end
-
-  def talk_posts(auth, topic_id, talk_id) do
-    get(auth, "topics/#{topic_id}/talks/#{talk_id}/posts")
   end
 
   def update_talk(auth, topic_id, talk_id, name) do
@@ -347,14 +367,14 @@ defmodule TypeTalk do
     delete(auth, "topics/#{topic_id}/talks/#{talk_id}")
   end
 
-  def add_posts_to_talk(auth, topic_id, talk_id, post_ids) do
+  def add_messages_to_talk(auth, topic_id, talk_id, post_ids) do
     data = Enum.zip(post_ids, 0..(length(post_ids) - 1))
          |> Enum.reduce(%{}, fn ({post_id, idx}, acc) -> Map.put(acc, "postIds[#{idx}]", post_id) end)
          |> URI.encode_query()
     post(auth, "topics/#{topic_id}/talks/#{talk_id}/posts", data)
   end
 
-  def delete_posts_from_talk(auth, topic_id, talk_id, post_ids) do
+  def delete_messages_from_talk(auth, topic_id, talk_id, post_ids) do
     data = [postIds: Enum.join(post_ids, ",")]
     delete(auth, "topics/#{topic_id}/talks/#{talk_id}/posts", data)
   end

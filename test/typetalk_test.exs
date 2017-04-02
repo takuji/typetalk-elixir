@@ -148,7 +148,7 @@ defmodule TypeTalkTest do
   test "add topic to favorite" do
     auth = access_token()
     topic = get_topic(auth)
-    TypeTalk.delete_from_favorite(auth, topic["id"])
+    TypeTalk.unfavorite_topic(auth, topic["id"])
 
     {:ok, res} = TypeTalk.favorite_topic(auth, topic["id"])
     assert res["favorite"] == true
@@ -157,10 +157,10 @@ defmodule TypeTalkTest do
   test "delete topic from favorite" do
     auth = access_token()
     topic = get_topic(auth)
-    TypeTalk.delete_from_favorite(auth, topic["id"])
+    TypeTalk.unfavorite_topic(auth, topic["id"])
     
     {:ok, _} = TypeTalk.favorite_topic(auth, topic["id"])
-    {:ok, res} = TypeTalk.delete_from_favorite(auth, topic["id"])
+    {:ok, res} = TypeTalk.unfavorite_topic(auth, topic["id"])
     assert res["favorite"] == false
   end
 end

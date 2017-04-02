@@ -5,7 +5,7 @@ defmodule TypeTalkTalksTest do
   test "get talks" do
     auth = access_token()
     topic = get_topic(auth)
-    {:ok, res} = TypeTalk.talks(auth, topic["id"])
+    {:ok, res} = TypeTalk.get_talks(auth, topic["id"])
     assert res["talks"] != nil
   end
 
@@ -35,7 +35,7 @@ defmodule TypeTalkTalksTest do
     auth = access_token(scope: "my,topic.read,topic.post,topic.write,topic.delete")
     topic = get_topic(auth)
     {:ok, talk} = create_talk(auth, topic)
-    {:ok, res} = TypeTalk.talk_posts(auth, topic["id"], talk["talk"]["id"])
+    {:ok, res} = TypeTalk.get_talk_messages(auth, topic["id"], talk["talk"]["id"])
     assert res["posts"] != nil
   end
 
@@ -57,7 +57,7 @@ defmodule TypeTalkTalksTest do
     message = "New message #{:os.system_time(:millisecond)}"
     {:ok, post} = TypeTalk.post_message(auth, talk["topic"]["id"], message)
     postIds = [post["post"]["id"]]
-    {:ok, res} = TypeTalk.add_posts_to_talk(auth, talk["topic"]["id"], talk["talk"]["id"], postIds)
+    {:ok, res} = TypeTalk.add_messages_to_talk(auth, talk["topic"]["id"], talk["talk"]["id"], postIds)
     assert res["postIds"] != nil
 
     {:ok, _} = TypeTalk.delete_talk(auth, talk["topic"]["id"], talk["talk"]["id"])    

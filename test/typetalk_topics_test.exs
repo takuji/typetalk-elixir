@@ -38,7 +38,7 @@ defmodule TypeTalkTopicsTest do
   test "get topic details" do
     auth = access_token()
     topic = get_topic(auth)
-    {:ok, res} = TypeTalk.topic_details(auth, topic["id"])
+    {:ok, res} = TypeTalk.get_topic_details(auth, topic["id"])
     assert res["topic"] != nil
   end
 end
