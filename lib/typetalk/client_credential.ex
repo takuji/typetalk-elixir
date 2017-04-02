@@ -11,9 +11,9 @@ defmodule TypeTalk.ClientCredential do
   Returns an access token and related information.
 
   ## Example
-      {:ok, auth} = TypeTalk.ClientCredential.access_token(client_id: "xxxxxxxxxxxxxxxx",
-                                              client_secret: "************************",
-                                              scope: "my,topic.read,topic.post")
+      {:ok, auth} = TypeTalk.ClientCredential.access_token("your-client-id",
+                                                           "your-client-secret",
+                                                           "my,topic.read,topic.post")
   ## API Doc
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/auth#client)
   """
