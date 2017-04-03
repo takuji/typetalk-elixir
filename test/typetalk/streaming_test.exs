@@ -1,4 +1,4 @@
-defmodule TypeTalkStreamingTest do
+defmodule TypeTalk.StreamingTest do
   use ExUnit.Case
   import TypeTalkTestHelper
 
