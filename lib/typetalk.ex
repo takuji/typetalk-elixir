@@ -124,6 +124,14 @@ defmodule TypeTalk do
 
   @doc """
   Post a message to a topic.
+
+  ### options
+  - replyTo
+  - showLinkMeta
+  - fileKeys
+  - talkIds
+  - attachmentFileUrls
+  - attachmentFileNames
   """
   def post_message(auth, topic_id, message, options \\ []) do
     params = message_options(options) |> Keyword.merge([message: message])
@@ -136,11 +144,27 @@ defmodule TypeTalk do
 
   defp convert_message_option(option, acc) do
     case option do
-      {:file_keys, keys} ->
+      {:fileKeys, keys} ->
         acc ++ make_indexed_params("fileKeys", keys)
+      {:talkIds, ids} ->
+        acc ++ make_indexed_params("talkIds", ids)
+      {:attachmentFileUrls, urls} ->
+        acc ++ make_attachment_file_urls(urls)
+      {:attachmentFileNames, names} ->
+        acc ++ make_attachment_file_names(names)
       _ ->
         acc ++ [option]
     end
+  end
+
+  defp make_attachment_file_urls(values) do
+    Enum.zip(values, 0..(length(values)-1))
+    |> Enum.map(fn {value, idx} -> {:"attachments[#{idx}].fileUrl", value} end)
+  end
+
+  defp make_attachment_file_names(values) do
+    Enum.zip(values, 0..(length(values)-1))
+    |> Enum.map(fn {value, idx} -> {:"attachments[#{idx}].fileName", value} end)
   end
 
   # Attachment
