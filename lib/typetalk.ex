@@ -126,8 +126,21 @@ defmodule TypeTalk do
   Post a message to a topic.
   """
   def post_message(auth, topic_id, message, options \\ []) do
-    params = options |> Keyword.merge([message: message])
+    params = message_options(options) |> Keyword.merge([message: message])
     post(auth, "topics/#{topic_id}", params)
+  end
+
+  defp message_options(options) do
+    Enum.reduce(options, [], &convert_message_option/2)
+  end
+
+  defp convert_message_option(option, acc) do
+    case option do
+      {:file_keys, keys} ->
+        acc ++ make_indexed_params("fileKeys", keys)
+      _ ->
+        acc ++ [option]
+    end
   end
 
   # Attachment

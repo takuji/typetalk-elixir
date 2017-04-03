@@ -16,4 +16,9 @@ defmodule TypeTalk.Util do
   def handle_response({_, err}) do
     {:error, err}
   end
+
+  def make_indexed_params(name, values) do
+    Enum.zip(values, 0..(length(values)-1))
+    |> Enum.map(fn {value, idx} -> {:"#{name}[#{idx}]", value} end)
+  end
 end
