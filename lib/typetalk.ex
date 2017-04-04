@@ -4,6 +4,7 @@ defmodule TypeTalk do
   @moduledoc """
   Documentation for TypeTalk.
   """
+  @type auth :: Map
 
   @api_base "https://typetalk.in/api/v1"
 
@@ -126,13 +127,14 @@ defmodule TypeTalk do
   Post a message to a topic.
 
   ### options
-  - replyTo
-  - showLinkMeta
-  - fileKeys
-  - talkIds
-  - attachmentFileUrls
-  - attachmentFileNames
+  - `:replyTo`
+  - `:showLinkMeta`
+  - `:fileKeys`
+  - `:talkIds`
+  - `:attachmentFileUrls`
+  - `:attachmentFileNames`
   """
+  @spec post_message(auth, binary, binary, Keyword.t) :: {:ok, Map}|{:error, Map}
   def post_message(auth, topic_id, message, options \\ []) do
     params = message_options(options) |> Keyword.merge([message: message])
     post(auth, "topics/#{topic_id}", params)
