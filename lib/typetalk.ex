@@ -140,7 +140,7 @@ defmodule TypeTalk do
   - `:attachmentFileUrls`
   - `:attachmentFileNames`
   """
-  @spec post_message(auth, binary, binary, Keyword.t) :: {:ok, Map}|{:error, Map}
+  @spec post_message(auth, binary, binary, Keyword.t) :: {:ok, map}|{:error, map}
   def post_message(auth, topic_id, message, options \\ []) do
     params = message_options(options) |> Keyword.merge([message: message])
     post(auth, "topics/#{topic_id}", params)
@@ -200,6 +200,7 @@ defmodule TypeTalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-topic-members)
   """
+  @spec get_topic_members(auth, String.t) :: {:ok, map}|{:error, map}
   def get_topic_members(auth, topic_id) do
     get(auth, "topics/#{topic_id}/members/status")
   end
@@ -209,6 +210,7 @@ defmodule TypeTalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-message)
   """
+  @spec get_message(auth, String.t, String.t) :: {:ok, map}|{:error, map}
   def get_message(auth, topic_id, post_id) do
     get(auth, "topics/#{topic_id}/posts/#{post_id}")
   end
@@ -218,6 +220,7 @@ defmodule TypeTalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/update-message)
   """
+  @spec update_message(auth, String.t, String.t, String.t) :: {:ok, map}|{:error, map}
   def update_message(auth, topic_id, post_id, message) do
     put(auth, "topics/#{topic_id}/posts/#{post_id}", %{"message" => message})
   end
@@ -227,6 +230,7 @@ defmodule TypeTalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/delete-message)
   """
+  @spec delete_message(auth, String.t, String.t) :: {:ok, map}|{:error, map}
   def delete_message(auth, topic_id, post_id) do
     delete(auth, "topics/#{topic_id}/posts/#{post_id}")
   end
@@ -238,6 +242,7 @@ defmodule TypeTalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/like-message)
   """
+  @spec like_message(auth, String.t, String.t) :: {:ok, map}|{:error, map}
   def like_message(auth, topic_id, post_id) do
     post(auth, "topics/#{topic_id}/posts/#{post_id}/like")
   end
@@ -247,6 +252,7 @@ defmodule TypeTalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/unlike-message)
   """
+  @spec unlike_message(auth, String.t, String.t) :: {:ok, map}|{:error, map}
   def unlike_message(auth, topic_id, post_id) do
     delete(auth, "topics/#{topic_id}/posts/#{post_id}/like")    
   end
@@ -258,6 +264,7 @@ defmodule TypeTalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/favorite-topic)
   """
+  @spec favorite_topic(auth, String.t) :: {:ok, map}|{:error, map}
   def favorite_topic(auth, topic_id) do
     post(auth, "topics/#{topic_id}/favorite")
   end
@@ -267,6 +274,7 @@ defmodule TypeTalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/unfavorite-topic)
   """
+  @spec unfavorite_topic(auth, String.t) :: {:ok, map}|{:error, map}
   def unfavorite_topic(auth, topic_id) do
     delete(auth, "topics/#{topic_id}/favorite")
   end
@@ -278,6 +286,7 @@ defmodule TypeTalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-direct-messages)
   """
+  @spec get_direct_messages(auth, String.t, Keyword.t) :: {:ok, map}|{:error, map}
   def get_direct_messages(auth, account_name, options \\ []) do
     data = Keyword.merge([direction: "forward"], options)
     account = URI.encode("@#{account_name}")
@@ -289,6 +298,7 @@ defmodule TypeTalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/post-direct-message)
   """
+  @spec post_direct_message(auth, String.t, String.t, Keyword.t) :: {:ok, map}|{:error, map}
   def post_direct_message(auth, account_name, message, options) do
     data = options |> Keyword.merge([message: message])
     post(auth, "messages/@#{account_name}", data)
@@ -301,6 +311,7 @@ defmodule TypeTalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-notifications)
   """
+  @spec get_notifications(auth) :: {:ok, map}|{:error, map}
   def get_notifications(auth) do
     get(auth, "notifications")
   end
@@ -310,6 +321,7 @@ defmodule TypeTalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-notification-status)
   """
+  @spec get_notification_status(auth) :: {:ok, map}|{:error, map}
   def get_notification_status(auth) do
     get(auth, "notifications/status")
   end
@@ -319,6 +331,7 @@ defmodule TypeTalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/open-notification)
   """
+  @spec mark_notifications_as_read(auth) :: {:ok, map}|{:error, map}
   def mark_notifications_as_read(auth) do
     put(auth, "notifications")    
   end
@@ -328,10 +341,12 @@ defmodule TypeTalk do
   @doc """
   Returns mentions
   """
+  @spec get_mentions(auth) :: {:ok, map}|{:error, map}
   def get_mentions(auth) do
     get(auth, "mentions")
   end
 
+  @spec get_mentions(auth, Keyword.t) :: {:ok, map}|{:error, map}
   def get_mentions(auth, options) do
     get(auth, "mentions", options)
   end
@@ -339,6 +354,7 @@ defmodule TypeTalk do
   @doc """
   Mark a mention as read.
   """
+  @spec mark_mention_as_read(auth, String.t) :: {:ok, map}|{:error, map}
   def mark_mention_as_read(auth, mention_id) do
     put(auth, "mentions/#{mention_id}")
   end
@@ -348,10 +364,12 @@ defmodule TypeTalk do
   @doc """
   Mark all messages in a mention as read.
   """
+  @spec mark_topic_as_read(auth, String.t) :: {:ok, map}|{:error, map}
   def mark_topic_as_read(auth, topic_id) do
     put(auth, "bookmarks", topicId: topic_id)
   end
 
+  @spec mark_topic_as_read(auth, String.t, String.t) :: {:ok, map}|{:error, map}
   def mark_topic_as_read(auth, topic_id, post_id) do
     put(auth, "bookmarks", topicId: topic_id, postId: post_id)
   end
@@ -359,6 +377,7 @@ defmodule TypeTalk do
   @doc """
   Create a new topic.
   """
+  @spec create_topic(auth, String.t, String.t, Keyword.t) :: {:ok, map}|{:error, map}
   def create_topic(auth, name, space_key, options \\ %{}) do
     params = Enum.into(options, [name: name, spaceKey: space_key])
     post(auth, "topics", params)
@@ -369,6 +388,7 @@ defmodule TypeTalk do
   @doc """
   Update a topic name.
   """
+  @spec update_topic(auth, String.t, String.t, Keyword.t) :: {:ok, map}|{:error, map}
   def update_topic(auth, topic_id, name, options \\ []) do
     data = options
          |> Enum.filter(fn({k,_v}) -> MapSet.member?(@update_topic_options, k) end)
@@ -379,6 +399,7 @@ defmodule TypeTalk do
   @doc """
   Delete a topic.
   """
+  @spec delete_topic(auth, String.t) :: {:ok, map}|{:error, map}
   def delete_topic(auth, topic_id) do
     delete(auth, "topics/#{topic_id}")
   end
@@ -386,6 +407,7 @@ defmodule TypeTalk do
   @doc """
   Returns topic information.
   """
+  @spec get_topic_details(auth, String.t) :: {:ok, map}|{:error, map}
   def get_topic_details(auth, topic_id) do
     get(auth, "topics/#{topic_id}/details")
   end
@@ -394,6 +416,7 @@ defmodule TypeTalk do
   @doc """
   Update topic members.
   """
+  @spec update_topic_members(auth, String.t, Keyword.t) :: {:ok, map}|{:error, map}
   def update_topic_members(auth, topic_id, params) do
     # [:addAccountIds, :addGroupIds, :invitationEmails, :invitationRoles, :removeAccountIds, :cancelSpaceInvitation, :removeGroupIds]
     post(auth, "topics/#{topic_id}/members/update", params)
@@ -404,6 +427,7 @@ defmodule TypeTalk do
   @doc """
   Returns the space information.
   """
+  @spec get_spaces(auth) :: {:ok, map}|{:error, map}
   def get_spaces(auth) do
     get(auth, "spaces")
   end
@@ -411,6 +435,7 @@ defmodule TypeTalk do
   @doc """
   Returns space members.
   """
+  @spec get_space_members(auth, String.t) :: {:ok, map}|{:error, map}
   def get_space_members(auth, space_key) do
     get(auth, "spaces/#{space_key}/members")
   end
@@ -424,6 +449,7 @@ defmodule TypeTalk do
     * `:offset`
     * `:count`
   """
+  @spec search_friends(auth, String.t, Keyword.t) :: {:ok, map}|{:error, map}
   def search_friends(auth, q, options \\ []) do
     params = %{
       q: q,
@@ -436,6 +462,7 @@ defmodule TypeTalk do
   @doc """
   Get information of an account.
   """
+  @spec search_account(auth, String.t) :: {:ok, map}|{:error, map}
   def search_account(auth, name_or_email) do
     get(auth, "search/accounts", [nameOrEmailAddress: name_or_email])
   end
@@ -445,6 +472,7 @@ defmodule TypeTalk do
   @doc """
   Returns talks of a topic.
   """
+  @spec get_talks(auth, String.t) :: {:ok, map}|{:error, map}
   def get_talks(auth, topic_id) do
     get(auth, "topics/#{topic_id}/talks")
   end
@@ -452,6 +480,7 @@ defmodule TypeTalk do
   @doc """
   Returns messages of a talk.
   """
+  @spec get_talk_messages(auth, String.t, String.t) :: {:ok, map}|{:error, map}
   def get_talk_messages(auth, topic_id, talk_id) do
     get(auth, "topics/#{topic_id}/talks/#{talk_id}/posts")
   end
@@ -459,6 +488,7 @@ defmodule TypeTalk do
   @doc """
   Creates a new talk.
   """
+  @spec create_talk(auth, String.t, String.t, [integer]) :: {:ok, map}|{:error, map}
   def create_talk(auth, topic_id, name, post_ids) do
     data = Enum.zip(post_ids, 0..(length(post_ids) - 1))
          |> Enum.reduce(%{"talkName" => name}, fn ({post_id, idx}, acc) -> Map.put(acc, "postIds[#{idx}]", post_id) end)
@@ -469,6 +499,7 @@ defmodule TypeTalk do
   @doc """
   Changes a talk's name.
   """
+  @spec update_talk(auth, String.t, String.t, String.t) :: {:ok, map}|{:error, map}
   def update_talk(auth, topic_id, talk_id, name) do
     put(auth, "topics/#{topic_id}/talks/#{talk_id}", talkName: name)
   end
@@ -476,6 +507,7 @@ defmodule TypeTalk do
   @doc """
   Deletes a talk.
   """
+  @spec delete_talk(auth, String.t, String.t) :: {:ok, map}|{:error, map}
   def delete_talk(auth, topic_id, talk_id) do
     delete(auth, "topics/#{topic_id}/talks/#{talk_id}")
   end
@@ -483,6 +515,7 @@ defmodule TypeTalk do
   @doc """
   Add messages to a talk.
   """
+  @spec add_messages_to_talk(auth, String.t, String.t, [integer]) :: {:ok, map}|{:error, map}
   def add_messages_to_talk(auth, topic_id, talk_id, post_ids) do
     data = Enum.zip(post_ids, 0..(length(post_ids) - 1))
          |> Enum.reduce(%{}, fn ({post_id, idx}, acc) -> Map.put(acc, "postIds[#{idx}]", post_id) end)
@@ -493,6 +526,7 @@ defmodule TypeTalk do
   @doc """
   Deletes messages from a talk.
   """
+  @spec delete_messages_from_talk(auth, String.t, String.t, [integer]) :: {:ok, map}|{:error, map}
   def delete_messages_from_talk(auth, topic_id, talk_id, post_ids) do
     data = [postIds: Enum.join(post_ids, ",")]
     delete(auth, "topics/#{topic_id}/talks/#{talk_id}/posts", data)
