@@ -1,6 +1,8 @@
 defmodule TypeTalk.ClientCredential do  
   @moduledoc """
-  Functions for authentication.
+  Function to get an access token using a client credential.
+
+  You use this module when you are the only user of Typetalk API.
   """
 
   import TypeTalk.Util

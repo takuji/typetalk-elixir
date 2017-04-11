@@ -4,7 +4,8 @@ defmodule TypeTalk do
   @moduledoc """
   Documentation for TypeTalk.
   """
-  @type auth :: Map | binary
+  @type type_talk_token :: binary
+  @type auth :: map | type_talk_token
 
   @api_base "https://typetalk.in/api/v1"
 
