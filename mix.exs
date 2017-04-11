@@ -1,4 +1,4 @@
-defmodule TypeTalk.Mixfile do
+defmodule Typetalk.Mixfile do
   use Mix.Project
 
   def project do

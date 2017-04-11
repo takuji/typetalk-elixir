@@ -1,8 +1,8 @@
-defmodule TypeTalk do
-  import TypeTalk.Util
+defmodule Typetalk do
+  import Typetalk.Util
   
   @moduledoc """
-  Documentation for TypeTalk.
+  Documentation for Typetalk.
   """
   @type type_talk_token :: binary
   @type auth :: map | type_talk_token

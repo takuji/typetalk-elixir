@@ -1,9 +1,9 @@
-defmodule TypeTalk.Util do
+defmodule Typetalk.Util do
   @moduledoc """
   Utility functions for implementing APIs.
   """
   def auth_header(auth) do
-    {name, value} = TypeTalk.Auth.header(auth)
+    {name, value} = Typetalk.Auth.header(auth)
     %{name => value}
   end
 

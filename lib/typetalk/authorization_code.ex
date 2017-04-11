@@ -1,11 +1,11 @@
-defmodule TypeTalk.AuthorizationCode do  
+defmodule Typetalk.AuthorizationCode do  
   @moduledoc """
   Function to get an access token using an authorization code.
 
   You use this module when you offer a web service to other people.
   """
 
-  import TypeTalk.Util
+  import Typetalk.Util
 
   @default_scope "my,topic.read,topi.post"
 
@@ -25,7 +25,7 @@ defmodule TypeTalk.AuthorizationCode do
   Returns an access token and related information.
 
   ## Example
-      {:ok, auth} = TypeTalk.AuthorizationCode.access_token("your-client-id",
+      {:ok, auth} = Typetalk.AuthorizationCode.access_token("your-client-id",
                                                             "your-client-secret",
                                                             "https://example.com/oauth_callback",
                                                             "code-returned-by-server")

@@ -1,9 +1,9 @@
-defmodule TypeTalkTestHelper do
+defmodule TypetalkTestHelper do
   @client_id System.get_env("TYPETALK_CLIENT_ID")
   @client_secret System.get_env("TYPETALK_CLIENT_SECRET")
 
   def access_token(options \\ []) do
-    {:ok, json} = TypeTalk.ClientCredential.access_token(
+    {:ok, json} = Typetalk.ClientCredential.access_token(
       @client_id,
       @client_secret,
       Keyword.get(options, :scope, "my,topic.read,topic.post")
@@ -12,13 +12,13 @@ defmodule TypeTalkTestHelper do
   end
 
   def get_topic(auth) do
-    {:ok, res} = TypeTalk.get_topics(auth)
+    {:ok, res} = Typetalk.get_topics(auth)
     topic = Enum.at(res["topics"], 0)
     topic["topic"]
   end
 
   def get_messages(auth, topic_id) do
-    {:ok, res} = TypeTalk.get_messages(auth, topic_id)
+    {:ok, res} = Typetalk.get_messages(auth, topic_id)
     res
   end
 
@@ -26,12 +26,12 @@ defmodule TypeTalkTestHelper do
     topic = get_topic(auth)
     posts = get_messages(auth, topic["id"])
     post = Enum.at(posts["posts"], 0)
-    {:ok, res} = TypeTalk.get_message(auth, topic["id"], post["id"])
+    {:ok, res} = Typetalk.get_message(auth, topic["id"], post["id"])
     res
   end
 
   def get_space(auth) do
-    {:ok, res} = TypeTalk.get_spaces(auth)
+    {:ok, res} = Typetalk.get_spaces(auth)
     Enum.at(res["mySpaces"], 0)
   end
 end

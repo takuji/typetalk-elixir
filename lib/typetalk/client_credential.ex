@@ -1,11 +1,11 @@
-defmodule TypeTalk.ClientCredential do  
+defmodule Typetalk.ClientCredential do  
   @moduledoc """
   Function to get an access token using a client credential.
 
   You use this module when you are the only user of Typetalk API.
   """
 
-  import TypeTalk.Util
+  import Typetalk.Util
 
   @default_scope "my,topic.read,topi.post"
 
@@ -13,7 +13,7 @@ defmodule TypeTalk.ClientCredential do
   Returns an access token and related information.
 
   ## Example
-      {:ok, auth} = TypeTalk.ClientCredential.access_token("your-client-id",
+      {:ok, auth} = Typetalk.ClientCredential.access_token("your-client-id",
                                                            "your-client-secret",
                                                            "my,topic.read,topic.post")
   ## API Doc

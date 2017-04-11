@@ -1,8 +1,8 @@
-defmodule TypeTalk.Streaming do
+defmodule Typetalk.Streaming do
   @moduledoc """
   Functions for streaming
   """
-  import TypeTalk.Util
+  import Typetalk.Util
 
   def connect(auth) do
     Socket.Web.connect("typetalk.in", path: "/api/v1/streaming", secure: true, headers: auth_header(auth))

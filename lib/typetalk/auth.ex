@@ -1,4 +1,4 @@
-defprotocol TypeTalk.Auth do
+defprotocol Typetalk.Auth do
   @doc """
   Returns a HTTP header for authentication
   """
@@ -8,13 +8,13 @@ defprotocol TypeTalk.Auth do
   def header(auth)
 end
 
-defimpl TypeTalk.Auth, for: BitString do
+defimpl Typetalk.Auth, for: BitString do
   def header(auth) do
     {"X-Typetalk-Token", auth}
   end
 end
 
-defimpl TypeTalk.Auth, for: Map do
+defimpl Typetalk.Auth, for: Map do
   def header(%{"access_token" => access_token}) do
     {"Authorization", "Bearer #{access_token}"}
   end
