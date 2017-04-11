@@ -3,7 +3,8 @@ defmodule TypeTalk.Util do
   Utility functions for implementing APIs.
   """
   def auth_header(auth) do
-    %{"Authorization" => "Bearer #{auth["access_token"]}"}
+    {name, value} = TypeTalk.Auth.header(auth)
+    %{name => value}
   end
 
   def handle_response({:ok, res}) do
