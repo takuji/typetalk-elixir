@@ -4,21 +4,21 @@ defmodule Typetalk do
   @moduledoc """
   Documentation for Typetalk.
   """
-  @type auth :: access_token | type_talk_token
+  @type token :: access_token | type_talk_token
   @type type_talk_token :: binary
   @type access_token :: Typetalk.AccessToken.t
 
   @api_base "https://typetalk.in/api/v1"
 
-  defp get(auth, path, params \\ []) do
+  defp get(token, path, params \\ []) do
     build_url(path, params)
-    |> HTTPoison.get(auth_header(auth))
+    |> HTTPoison.get(auth_header(token))
     |> handle_response
   end
 
-  defp post(auth, path, params \\ []) do
+  defp post(token, path, params \\ []) do
     {headers, data} = create_post_data(params)
-    HTTPoison.post("#{@api_base}/#{path}", data, Map.merge(auth_header(auth), headers))
+    HTTPoison.post("#{@api_base}/#{path}", data, Map.merge(auth_header(token), headers))
     |> handle_response
   end
 
@@ -31,21 +31,21 @@ defmodule Typetalk do
     end
   end
 
-  defp post_file(auth, path, file) when is_binary(file) do
+  defp post_file(token, path, file) when is_binary(file) do
     data = {:multipart, [{:file, file}]}
-    HTTPoison.post("#{@api_base}/#{path}", data, auth_header(auth))
+    HTTPoison.post("#{@api_base}/#{path}", data, auth_header(token))
     |> handle_response
   end
 
-  defp put(auth, path, params \\ []) do
+  defp put(token, path, params \\ []) do
     build_url(path, params)
-    |> HTTPoison.put("", auth_header(auth))
+    |> HTTPoison.put("", auth_header(token))
     |> handle_response
   end
 
-  defp delete(auth, path, params \\ []) do
+  defp delete(token, path, params \\ []) do
     build_url(path, params)
-    |> HTTPoison.delete(auth_header(auth))
+    |> HTTPoison.delete(auth_header(token))
     |> handle_response
   end
 
@@ -65,9 +65,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-profile)
   """
-  @spec get_profile(auth) :: {:ok, map}|{:error, map}
-  def get_profile(auth) do
-    get(auth, "profile")
+  @spec get_profile(token) :: {:ok, map}|{:error, map}
+  def get_profile(token) do
+    get(token, "profile")
   end
 
   @doc """
@@ -75,9 +75,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-friend-profile)
   """
-  @spec get_friend_profile(auth, String.t) :: {:ok, map}|{:error, map}
-  def get_friend_profile(auth, account_name) do
-    get(auth, "accounts/profile/#{account_name}")
+  @spec get_friend_profile(token, String.t) :: {:ok, map}|{:error, map}
+  def get_friend_profile(token, account_name) do
+    get(token, "accounts/profile/#{account_name}")
   end
 
   @doc """
@@ -85,10 +85,10 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-online-status)
   """
-  @spec get_online_status(auth, [integer]) :: {:ok, map}|{:error, map}
-  def get_online_status(auth, account_ids) do
+  @spec get_online_status(token, [integer]) :: {:ok, map}|{:error, map}
+  def get_online_status(token, account_ids) do
     q = Enum.join(account_ids, ",")
-    get(auth, "accounts/status", %{"accountIds" => q})
+    get(token, "accounts/status", %{"accountIds" => q})
   end
 
   @doc """
@@ -96,9 +96,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-topics)
   """
-  @spec get_topics(auth) :: {:ok, map}|{:error, map}
-  def get_topics(auth) do
-    get(auth, "topics")
+  @spec get_topics(token) :: {:ok, map}|{:error, map}
+  def get_topics(token) do
+    get(token, "topics")
   end
 
   @doc """
@@ -106,9 +106,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-dm-topics)
   """
-  @spec get_dm_topics(auth) :: {:ok, map}|{:error, map}
-  def get_dm_topics(auth) do
-    get(auth, "messages")
+  @spec get_dm_topics(token) :: {:ok, map}|{:error, map}
+  def get_dm_topics(token) do
+    get(token, "messages")
   end
 
   @doc """
@@ -116,9 +116,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-messages)
   """
-  @spec get_messages(auth, String.t) :: {:ok, map}|{:error, map}
-  def get_messages(auth, topic_id) do
-    get(auth, "topics/#{topic_id}")
+  @spec get_messages(token, String.t) :: {:ok, map}|{:error, map}
+  def get_messages(token, topic_id) do
+    get(token, "topics/#{topic_id}")
   end
 
   @doc """
@@ -134,10 +134,10 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/post-message)
   """
-  @spec post_message(auth, binary, binary, Keyword.t) :: {:ok, map}|{:error, map}
-  def post_message(auth, topic_id, message, options \\ []) do
+  @spec post_message(token, binary, binary, Keyword.t) :: {:ok, map}|{:error, map}
+  def post_message(token, topic_id, message, options \\ []) do
     params = message_options(options) |> Keyword.merge([message: message])
-    post(auth, "topics/#{topic_id}", params)
+    post(token, "topics/#{topic_id}", params)
   end
 
   defp message_options(options) do
@@ -176,9 +176,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/update-attachment)
   """
-  @spec upload_attachment(auth, String.t, String.t) :: {:ok, map}|{:error, map}
-  def upload_attachment(auth, topic_id, filepath) do
-    post_file(auth, "topics/#{topic_id}/attachments", filepath)
+  @spec upload_attachment(token, String.t, String.t) :: {:ok, map}|{:error, map}
+  def upload_attachment(token, topic_id, filepath) do
+    post_file(token, "topics/#{topic_id}/attachments", filepath)
   end
 
   @doc """
@@ -186,9 +186,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/download-attachment)
   """
-  @spec download_attachment(auth, String.t, String.t, String.t, String.t) :: {:ok, map}|{:error, map}
-  def download_attachment(auth, topic_id, post_id, attachment_id, filename) do
-    get(auth, "topics/#{topic_id}/posts/#{post_id}/attachments/#{attachment_id}/#{filename}")
+  @spec download_attachment(token, String.t, String.t, String.t, String.t) :: {:ok, map}|{:error, map}
+  def download_attachment(token, topic_id, post_id, attachment_id, filename) do
+    get(token, "topics/#{topic_id}/posts/#{post_id}/attachments/#{attachment_id}/#{filename}")
   end
 
   # Topic
@@ -198,9 +198,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-topic-members)
   """
-  @spec get_topic_members(auth, String.t) :: {:ok, map}|{:error, map}
-  def get_topic_members(auth, topic_id) do
-    get(auth, "topics/#{topic_id}/members/status")
+  @spec get_topic_members(token, String.t) :: {:ok, map}|{:error, map}
+  def get_topic_members(token, topic_id) do
+    get(token, "topics/#{topic_id}/members/status")
   end
 
   @doc """
@@ -208,9 +208,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-message)
   """
-  @spec get_message(auth, String.t, String.t) :: {:ok, map}|{:error, map}
-  def get_message(auth, topic_id, post_id) do
-    get(auth, "topics/#{topic_id}/posts/#{post_id}")
+  @spec get_message(token, String.t, String.t) :: {:ok, map}|{:error, map}
+  def get_message(token, topic_id, post_id) do
+    get(token, "topics/#{topic_id}/posts/#{post_id}")
   end
 
   @doc """
@@ -218,9 +218,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/update-message)
   """
-  @spec update_message(auth, String.t, String.t, String.t) :: {:ok, map}|{:error, map}
-  def update_message(auth, topic_id, post_id, message) do
-    put(auth, "topics/#{topic_id}/posts/#{post_id}", %{"message" => message})
+  @spec update_message(token, String.t, String.t, String.t) :: {:ok, map}|{:error, map}
+  def update_message(token, topic_id, post_id, message) do
+    put(token, "topics/#{topic_id}/posts/#{post_id}", %{"message" => message})
   end
 
   @doc """
@@ -228,9 +228,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/delete-message)
   """
-  @spec delete_message(auth, String.t, String.t) :: {:ok, map}|{:error, map}
-  def delete_message(auth, topic_id, post_id) do
-    delete(auth, "topics/#{topic_id}/posts/#{post_id}")
+  @spec delete_message(token, String.t, String.t) :: {:ok, map}|{:error, map}
+  def delete_message(token, topic_id, post_id) do
+    delete(token, "topics/#{topic_id}/posts/#{post_id}")
   end
 
   # Like
@@ -240,9 +240,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/like-message)
   """
-  @spec like_message(auth, String.t, String.t) :: {:ok, map}|{:error, map}
-  def like_message(auth, topic_id, post_id) do
-    post(auth, "topics/#{topic_id}/posts/#{post_id}/like")
+  @spec like_message(token, String.t, String.t) :: {:ok, map}|{:error, map}
+  def like_message(token, topic_id, post_id) do
+    post(token, "topics/#{topic_id}/posts/#{post_id}/like")
   end
 
   @doc """
@@ -250,9 +250,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/unlike-message)
   """
-  @spec unlike_message(auth, String.t, String.t) :: {:ok, map}|{:error, map}
-  def unlike_message(auth, topic_id, post_id) do
-    delete(auth, "topics/#{topic_id}/posts/#{post_id}/like")    
+  @spec unlike_message(token, String.t, String.t) :: {:ok, map}|{:error, map}
+  def unlike_message(token, topic_id, post_id) do
+    delete(token, "topics/#{topic_id}/posts/#{post_id}/like")    
   end
 
   # Favorite topic
@@ -262,9 +262,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/favorite-topic)
   """
-  @spec favorite_topic(auth, String.t) :: {:ok, map}|{:error, map}
-  def favorite_topic(auth, topic_id) do
-    post(auth, "topics/#{topic_id}/favorite")
+  @spec favorite_topic(token, String.t) :: {:ok, map}|{:error, map}
+  def favorite_topic(token, topic_id) do
+    post(token, "topics/#{topic_id}/favorite")
   end
 
   @doc """
@@ -272,9 +272,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/unfavorite-topic)
   """
-  @spec unfavorite_topic(auth, String.t) :: {:ok, map}|{:error, map}
-  def unfavorite_topic(auth, topic_id) do
-    delete(auth, "topics/#{topic_id}/favorite")
+  @spec unfavorite_topic(token, String.t) :: {:ok, map}|{:error, map}
+  def unfavorite_topic(token, topic_id) do
+    delete(token, "topics/#{topic_id}/favorite")
   end
 
   # Direct messages
@@ -284,11 +284,11 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-direct-messages)
   """
-  @spec get_direct_messages(auth, String.t, Keyword.t) :: {:ok, map}|{:error, map}
-  def get_direct_messages(auth, account_name, options \\ []) do
+  @spec get_direct_messages(token, String.t, Keyword.t) :: {:ok, map}|{:error, map}
+  def get_direct_messages(token, account_name, options \\ []) do
     data = Keyword.merge([direction: "forward"], options)
     account = URI.encode("@#{account_name}")
-    get(auth, "messages/#{account}", data)
+    get(token, "messages/#{account}", data)
   end
 
   @doc """
@@ -296,10 +296,10 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/post-direct-message)
   """
-  @spec post_direct_message(auth, String.t, String.t, Keyword.t) :: {:ok, map}|{:error, map}
-  def post_direct_message(auth, account_name, message, options) do
+  @spec post_direct_message(token, String.t, String.t, Keyword.t) :: {:ok, map}|{:error, map}
+  def post_direct_message(token, account_name, message, options) do
     data = options |> Keyword.merge([message: message])
-    post(auth, "messages/@#{account_name}", data)
+    post(token, "messages/@#{account_name}", data)
   end
 
   # Notifications
@@ -309,9 +309,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-notifications)
   """
-  @spec get_notifications(auth) :: {:ok, map}|{:error, map}
-  def get_notifications(auth) do
-    get(auth, "notifications")
+  @spec get_notifications(token) :: {:ok, map}|{:error, map}
+  def get_notifications(token) do
+    get(token, "notifications")
   end
 
   @doc """
@@ -319,9 +319,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-notification-status)
   """
-  @spec get_notification_status(auth) :: {:ok, map}|{:error, map}
-  def get_notification_status(auth) do
-    get(auth, "notifications/status")
+  @spec get_notification_status(token) :: {:ok, map}|{:error, map}
+  def get_notification_status(token) do
+    get(token, "notifications/status")
   end
 
   @doc """
@@ -329,9 +329,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/open-notification)
   """
-  @spec mark_notifications_as_read(auth) :: {:ok, map}|{:error, map}
-  def mark_notifications_as_read(auth) do
-    put(auth, "notifications")    
+  @spec mark_notifications_as_read(token) :: {:ok, map}|{:error, map}
+  def mark_notifications_as_read(token) do
+    put(token, "notifications")    
   end
 
   # Mentions
@@ -341,9 +341,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-mentions)
   """
-  @spec get_mentions(auth, Keyword.t) :: {:ok, map}|{:error, map}
-  def get_mentions(auth, options \\ []) do
-    get(auth, "mentions", options)
+  @spec get_mentions(token, Keyword.t) :: {:ok, map}|{:error, map}
+  def get_mentions(token, options \\ []) do
+    get(token, "mentions", options)
   end
 
   @doc """
@@ -351,9 +351,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-mentions)
   """
-  @spec mark_mention_as_read(auth, String.t) :: {:ok, map}|{:error, map}
-  def mark_mention_as_read(auth, mention_id) do
-    put(auth, "mentions/#{mention_id}")
+  @spec mark_mention_as_read(token, String.t) :: {:ok, map}|{:error, map}
+  def mark_mention_as_read(token, mention_id) do
+    put(token, "mentions/#{mention_id}")
   end
 
   # Topics
@@ -363,9 +363,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/save-read-mention)
   """
-  @spec mark_topic_as_read(auth, String.t) :: {:ok, map}|{:error, map}
-  def mark_topic_as_read(auth, topic_id) do
-    put(auth, "bookmarks", topicId: topic_id)
+  @spec mark_topic_as_read(token, String.t) :: {:ok, map}|{:error, map}
+  def mark_topic_as_read(token, topic_id) do
+    put(token, "bookmarks", topicId: topic_id)
   end
 
   @doc """
@@ -373,9 +373,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/save-read-mention)
   """
-  @spec mark_topic_as_read(auth, String.t, String.t) :: {:ok, map}|{:error, map}
-  def mark_topic_as_read(auth, topic_id, post_id) do
-    put(auth, "bookmarks", topicId: topic_id, postId: post_id)
+  @spec mark_topic_as_read(token, String.t, String.t) :: {:ok, map}|{:error, map}
+  def mark_topic_as_read(token, topic_id, post_id) do
+    put(token, "bookmarks", topicId: topic_id, postId: post_id)
   end
 
   @doc """
@@ -383,10 +383,10 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/create-topic)
   """
-  @spec create_topic(auth, String.t, String.t, Keyword.t) :: {:ok, map}|{:error, map}
-  def create_topic(auth, name, space_key, options \\ %{}) do
+  @spec create_topic(token, String.t, String.t, Keyword.t) :: {:ok, map}|{:error, map}
+  def create_topic(token, name, space_key, options \\ %{}) do
     params = Enum.into(options, [name: name, spaceKey: space_key])
-    post(auth, "topics", params)
+    post(token, "topics", params)
   end
 
   @update_topic_options MapSet.new([:description])
@@ -396,12 +396,12 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/update-topic)
   """
-  @spec update_topic(auth, String.t, String.t, Keyword.t) :: {:ok, map}|{:error, map}
-  def update_topic(auth, topic_id, name, options \\ []) do
+  @spec update_topic(token, String.t, String.t, Keyword.t) :: {:ok, map}|{:error, map}
+  def update_topic(token, topic_id, name, options \\ []) do
     data = options
          |> Enum.filter(fn({k,_v}) -> MapSet.member?(@update_topic_options, k) end)
          |> Keyword.merge([name: name])
-    put(auth, "topics/#{topic_id}", data)
+    put(token, "topics/#{topic_id}", data)
   end
 
   @doc """
@@ -409,9 +409,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/delete-topic)
   """
-  @spec delete_topic(auth, String.t) :: {:ok, map}|{:error, map}
-  def delete_topic(auth, topic_id) do
-    delete(auth, "topics/#{topic_id}")
+  @spec delete_topic(token, String.t) :: {:ok, map}|{:error, map}
+  def delete_topic(token, topic_id) do
+    delete(token, "topics/#{topic_id}")
   end
 
   @doc """
@@ -419,9 +419,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-topic-details)
   """
-  @spec get_topic_details(auth, String.t) :: {:ok, map}|{:error, map}
-  def get_topic_details(auth, topic_id) do
-    get(auth, "topics/#{topic_id}/details")
+  @spec get_topic_details(token, String.t) :: {:ok, map}|{:error, map}
+  def get_topic_details(token, topic_id) do
+    get(token, "topics/#{topic_id}/details")
   end
 
   # No test
@@ -430,10 +430,10 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/update-topic-members)
   """
-  @spec update_topic_members(auth, String.t, Keyword.t) :: {:ok, map}|{:error, map}
-  def update_topic_members(auth, topic_id, params) do
+  @spec update_topic_members(token, String.t, Keyword.t) :: {:ok, map}|{:error, map}
+  def update_topic_members(token, topic_id, params) do
     # [:addAccountIds, :addGroupIds, :invitationEmails, :invitationRoles, :removeAccountIds, :cancelSpaceInvitation, :removeGroupIds]
-    post(auth, "topics/#{topic_id}/members/update", params)
+    post(token, "topics/#{topic_id}/members/update", params)
   end
 
   # Spaces
@@ -443,9 +443,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-spaces)
   """
-  @spec get_spaces(auth) :: {:ok, map}|{:error, map}
-  def get_spaces(auth) do
-    get(auth, "spaces")
+  @spec get_spaces(token) :: {:ok, map}|{:error, map}
+  def get_spaces(token) do
+    get(token, "spaces")
   end
 
   @doc """
@@ -453,9 +453,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-space-members)
   """
-  @spec get_space_members(auth, String.t) :: {:ok, map}|{:error, map}
-  def get_space_members(auth, space_key) do
-    get(auth, "spaces/#{space_key}/members")
+  @spec get_space_members(token, String.t) :: {:ok, map}|{:error, map}
+  def get_space_members(token, space_key) do
+    get(token, "spaces/#{space_key}/members")
   end
 
   # Search accounts
@@ -469,14 +469,14 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-friends)
   """
-  @spec search_friends(auth, String.t, Keyword.t) :: {:ok, map}|{:error, map}
-  def search_friends(auth, q, options \\ []) do
+  @spec search_friends(token, String.t, Keyword.t) :: {:ok, map}|{:error, map}
+  def search_friends(token, q, options \\ []) do
     params = %{
       q: q,
       offset: Keyword.get(options, :offset, 0),
       count: Keyword.get(options, :count, 30)
     }
-    get(auth, "search/friends", params)
+    get(token, "search/friends", params)
   end
 
   @doc """
@@ -484,9 +484,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/search-accounts)
   """
-  @spec search_account(auth, String.t) :: {:ok, map}|{:error, map}
-  def search_account(auth, name_or_email) do
-    get(auth, "search/accounts", [nameOrEmailAddress: name_or_email])
+  @spec search_account(token, String.t) :: {:ok, map}|{:error, map}
+  def search_account(token, name_or_email) do
+    get(token, "search/accounts", [nameOrEmailAddress: name_or_email])
   end
 
   # Talks
@@ -496,9 +496,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-talks)
   """
-  @spec get_talks(auth, String.t) :: {:ok, map}|{:error, map}
-  def get_talks(auth, topic_id) do
-    get(auth, "topics/#{topic_id}/talks")
+  @spec get_talks(token, String.t) :: {:ok, map}|{:error, map}
+  def get_talks(token, topic_id) do
+    get(token, "topics/#{topic_id}/talks")
   end
 
   @doc """
@@ -506,9 +506,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-talk-messages)
   """
-  @spec get_talk_messages(auth, String.t, String.t) :: {:ok, map}|{:error, map}
-  def get_talk_messages(auth, topic_id, talk_id) do
-    get(auth, "topics/#{topic_id}/talks/#{talk_id}/posts")
+  @spec get_talk_messages(token, String.t, String.t) :: {:ok, map}|{:error, map}
+  def get_talk_messages(token, topic_id, talk_id) do
+    get(token, "topics/#{topic_id}/talks/#{talk_id}/posts")
   end
 
   @doc """
@@ -516,12 +516,12 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/create-talk)
   """
-  @spec create_talk(auth, String.t, String.t, [integer]) :: {:ok, map}|{:error, map}
-  def create_talk(auth, topic_id, name, post_ids) do
+  @spec create_talk(token, String.t, String.t, [integer]) :: {:ok, map}|{:error, map}
+  def create_talk(token, topic_id, name, post_ids) do
     data = Enum.zip(post_ids, 0..(length(post_ids) - 1))
          |> Enum.reduce(%{"talkName" => name}, fn ({post_id, idx}, acc) -> Map.put(acc, "postIds[#{idx}]", post_id) end)
          |> URI.encode_query()
-    post(auth, "topics/#{topic_id}/talks", data)
+    post(token, "topics/#{topic_id}/talks", data)
   end
 
   @doc """
@@ -529,9 +529,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/update-talk)
   """
-  @spec update_talk(auth, String.t, String.t, String.t) :: {:ok, map}|{:error, map}
-  def update_talk(auth, topic_id, talk_id, name) do
-    put(auth, "topics/#{topic_id}/talks/#{talk_id}", talkName: name)
+  @spec update_talk(token, String.t, String.t, String.t) :: {:ok, map}|{:error, map}
+  def update_talk(token, topic_id, talk_id, name) do
+    put(token, "topics/#{topic_id}/talks/#{talk_id}", talkName: name)
   end
 
   @doc """
@@ -539,9 +539,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/delete-talk)
   """
-  @spec delete_talk(auth, String.t, String.t) :: {:ok, map}|{:error, map}
-  def delete_talk(auth, topic_id, talk_id) do
-    delete(auth, "topics/#{topic_id}/talks/#{talk_id}")
+  @spec delete_talk(token, String.t, String.t) :: {:ok, map}|{:error, map}
+  def delete_talk(token, topic_id, talk_id) do
+    delete(token, "topics/#{topic_id}/talks/#{talk_id}")
   end
 
   @doc """
@@ -549,12 +549,12 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/add-memssage-to-talk)
   """
-  @spec add_messages_to_talk(auth, String.t, String.t, [integer]) :: {:ok, map}|{:error, map}
-  def add_messages_to_talk(auth, topic_id, talk_id, post_ids) do
+  @spec add_messages_to_talk(token, String.t, String.t, [integer]) :: {:ok, map}|{:error, map}
+  def add_messages_to_talk(token, topic_id, talk_id, post_ids) do
     data = Enum.zip(post_ids, 0..(length(post_ids) - 1))
          |> Enum.reduce(%{}, fn ({post_id, idx}, acc) -> Map.put(acc, "postIds[#{idx}]", post_id) end)
          |> URI.encode_query()
-    post(auth, "topics/#{topic_id}/talks/#{talk_id}/posts", data)
+    post(token, "topics/#{topic_id}/talks/#{talk_id}/posts", data)
   end
 
   @doc """
@@ -562,9 +562,9 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/remove-memssage-from-talk)
   """
-  @spec delete_messages_from_talk(auth, String.t, String.t, [integer]) :: {:ok, map}|{:error, map}
-  def delete_messages_from_talk(auth, topic_id, talk_id, post_ids) do
+  @spec delete_messages_from_talk(token, String.t, String.t, [integer]) :: {:ok, map}|{:error, map}
+  def delete_messages_from_talk(token, topic_id, talk_id, post_ids) do
     data = [postIds: Enum.join(post_ids, ",")]
-    delete(auth, "topics/#{topic_id}/talks/#{talk_id}/posts", data)
+    delete(token, "topics/#{topic_id}/talks/#{talk_id}/posts", data)
   end
 end

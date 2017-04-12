@@ -4,8 +4,8 @@ defmodule Typetalk.Streaming do
   """
   import Typetalk.Util
 
-  def connect(auth) do
-    Socket.Web.connect("typetalk.in", path: "/api/v1/streaming", secure: true, headers: auth_header(auth))
+  def connect(token) do
+    Socket.Web.connect("typetalk.in", path: "/api/v1/streaming", secure: true, headers: auth_header(token))
   end
 
   def close(socket) do
