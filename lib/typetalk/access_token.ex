@@ -1,5 +1,6 @@
 defmodule Typetalk.AccessToken do
   @moduledoc """
+  A AccessToken struct and functions.
   """
   import Typetalk.Util
 
@@ -7,13 +8,24 @@ defmodule Typetalk.AccessToken do
 
   @type t :: %__MODULE__{access_token: String.t, token_type: String.t, expires_in: non_neg_integer, refresh_token: String.t}
 
-  def refresh(client_id, client_secret, %__MODULE__{refresh_token: refresh_token}) do
+  @doc """
+  Refresh the access token.
+
+  ## Example
+      {:ok, token} = Typetalk.ClientCredential.access_token(client_id, client_secret)
+      {:ok, refreshed_token} = Typetalk.AccessToken.refresh(access_token, client_id, client_secret)
+
+  ## API Doc
+  [API Doc](https://developer.nulab-inc.com/docs/typetalk/auth#refresh)
+  """
+  @spec refresh(__MODULE__, String.t, String.t) :: {:ok, __MODULE__}|{:error, HTTPoison.Response.t}
+  def refresh(%__MODULE__{refresh_token: refresh_token}, client_id, client_secret) do
     {:form, [grant_type: "refresh_token", client_id: client_id, client_secret: client_secret, refresh_token: refresh_token]}
     |> get_access_token
   end
 
-  def get_access_token(params) do
-    HTTPoison.post("https://typetalk.in/oauth2/access_token", params)
+  def get_access_token(post_data) when is_tuple(post_data) do
+    HTTPoison.post("https://typetalk.in/oauth2/access_token", post_data)
     |> handle_response
     |> response_to_access_token
   end

@@ -5,10 +5,6 @@ defmodule Typetalk.ClientCredential do
   You use this module when you are the only user of Typetalk API.
   """
 
-  @type auth :: Typetalk.AccessToken.t
-
-  import Typetalk.Util
-
   @default_scope "my,topic.read,topi.post"
 
   @doc """
@@ -21,7 +17,7 @@ defmodule Typetalk.ClientCredential do
   ## API Doc
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/auth#client)
   """
-  @spec access_token(String.t, String.t, String.t) :: {:ok, auth}|{:error, HTTPoison.Response.t}
+  @spec access_token(String.t, String.t, String.t) :: {:ok, Typetalk.AccessToken.t}|{:error, HTTPoison.Response.t}
   def access_token(client_id, client_secret, scope \\ @default_scope) do
     {:form, [grant_type: "client_credentials", client_id: client_id, client_secret: client_secret, scope: scope]}
     |> Typetalk.AccessToken.get_access_token
