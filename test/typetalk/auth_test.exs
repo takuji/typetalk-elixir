@@ -5,7 +5,7 @@ defmodule Typetalk.AuthlTest do
     assert {"X-Typetalk-Token", "hoge"} == Typetalk.Auth.header("hoge")
   end
 
-  test "header for map" do
-    assert {"Authorization", "Bearer hoge"} == Typetalk.Auth.header(%{"access_token" => "hoge"})
+  test "header for AccessToken" do
+    assert {"Authorization", "Bearer hoge"} == Typetalk.Auth.header(%Typetalk.AccessToken{access_token: "hoge"})
   end
 end

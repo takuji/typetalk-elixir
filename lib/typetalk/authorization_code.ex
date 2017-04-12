@@ -7,6 +7,8 @@ defmodule Typetalk.AuthorizationCode do
 
   import Typetalk.Util
 
+  @type auth :: Typetalk.AccessToken.t
+
   @default_scope "my,topic.read,topi.post"
 
   @doc """
@@ -32,7 +34,7 @@ defmodule Typetalk.AuthorizationCode do
   ## API Doc
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/auth#code)
   """
-  @spec access_token(String.t, String.t, String.t, String.t) :: {:ok, map} | {:error, HTTPoison.Response}
+  @spec access_token(String.t, String.t, String.t, String.t) :: {:ok, auth} | {:error, HTTPoison.Response}
   def access_token(client_id, client_secret, redirect_uri, code) do
     params = {:form, [grant_type: "authorization_code",
                       client_id: client_id,
