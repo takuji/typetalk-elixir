@@ -9,40 +9,25 @@ defmodule Typetalk do
 
   @api_base "https://typetalk.in/api/v1"
 
-  defp get(auth, path) do
-    _get(auth, "#{@api_base}/#{path}")
-  end
-
-  defp get(auth, path, params) do
-     _get(auth, "#{@api_base}/#{path}?#{URI.encode_query(params)}")
-  end
-
-  defp _get(auth, url) do
-    url
+  defp get(auth, path, params \\ []) do
+    build_url(path, params)
     |> HTTPoison.get(auth_header(auth))
     |> handle_response
   end
 
-  defp post(auth, path) do
-    header = Map.merge(auth_header(auth), %{"Content-Type" => "application/x-www-form-urlencoded"})
-    HTTPoison.post("#{@api_base}/#{path}", "", header)
+  defp post(auth, path, params \\ []) do
+    {headers, data} = create_post_data(params)
+    HTTPoison.post("#{@api_base}/#{path}", data, Map.merge(auth_header(auth), headers))
     |> handle_response
   end
 
-  defp post(auth, path, params) when is_binary(params) do
-    header = Map.merge(auth_header(auth), %{"Content-Type" => "application/x-www-form-urlencoded"})
-    HTTPoison.post("#{@api_base}/#{path}", params, header)
-    |> handle_response
-  end
-
-  defp post(auth, path, params) when is_list(params) do
-    HTTPoison.post("#{@api_base}/#{path}", {:form, params}, auth_header(auth))
-    |> handle_response
-  end
-
-  defp post(auth, path, params) when is_map(params) do
-    HTTPoison.post("#{@api_base}/#{path}", {:form, Enum.into(params, [])}, auth_header(auth))
-    |> handle_response
+  defp create_post_data(params) do
+    case params do
+      [] -> {%{"Content-Type" => "application/x-www-form-urlencoded"}, ""}
+      _ when is_binary(params) -> {%{"Content-Type" => "application/x-www-form-urlencoded"}, params}
+      _ when is_list(params) -> {%{}, {:form, params}}
+      # _ -> {%{}, Enum.into(params, [])}
+    end
   end
 
   defp post_file(auth, path, file) when is_binary(file) do
@@ -51,33 +36,28 @@ defmodule Typetalk do
     |> handle_response
   end
 
-  defp put(auth, path) do
-    _put(auth, "#{@api_base}/#{path}")
-  end
-
-  defp put(auth, path, params) do
-    _put(auth, "#{@api_base}/#{path}?#{URI.encode_query(params)}")
-  end
-
-  defp _put(auth, url) do
-    url 
+  defp put(auth, path, params \\ []) do
+    build_url(path, params)
     |> HTTPoison.put("", auth_header(auth))
     |> handle_response
   end
 
-  defp delete(auth, path) do
-    _delete(auth, "#{@api_base}/#{path}")
-  end
-
-  defp delete(auth, path, params) do
-    _delete(auth, "#{@api_base}/#{path}?#{URI.encode_query(params)}")
-  end
-
-  defp _delete(auth, url) do
-    url
+  defp delete(auth, path, params \\ []) do
+    build_url(path, params)
     |> HTTPoison.delete(auth_header(auth))
     |> handle_response
   end
+
+  defp build_url(path, query_params) do
+    case query_params do
+      [] -> "#{@api_base}/#{path}"
+      _ -> "#{@api_base}/#{path}?#{URI.encode_query(query_params)}"
+    end
+  end
+
+  # 
+  # API
+  # 
 
   @doc """
   Returns the profile of the caller.
@@ -360,18 +340,8 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-mentions)
   """
-  @spec get_mentions(auth) :: {:ok, map}|{:error, map}
-  def get_mentions(auth) do
-    get(auth, "mentions")
-  end
-
-  @doc """
-  Returns mentions
-
-  [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-mentions)
-  """
   @spec get_mentions(auth, Keyword.t) :: {:ok, map}|{:error, map}
-  def get_mentions(auth, options) do
+  def get_mentions(auth, options \\ []) do
     get(auth, "mentions", options)
   end
 
