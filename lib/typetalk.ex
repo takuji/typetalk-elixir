@@ -2,7 +2,9 @@ defmodule Typetalk do
   import Typetalk.Util
   
   @moduledoc """
-  Documentation for Typetalk.
+  A [Typetalk](https://typetalk.in) API client library.
+
+  [API Doc](https://developer.nulab-inc.com/docs/typetalk)
   """
   @type token :: access_token | type_talk_token
   @type type_talk_token :: binary
