@@ -386,7 +386,7 @@ defmodule Typetalk do
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/create-topic)
   """
   @spec create_topic(token, String.t, String.t, Keyword.t) :: {:ok, map}|{:error, map}
-  def create_topic(token, name, space_key, options \\ %{}) do
+  def create_topic(token, name, space_key, options \\ []) do
     params = Enum.into(options, [name: name, spaceKey: space_key])
     post(token, "topics", params)
   end
