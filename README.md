@@ -2,10 +2,11 @@
 
 A Typetalk client library for Elixir language.
 
+API Document: https://hexdocs.pm/typetalk/api-reference.html
+
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `typetalk` to your list of dependencies in `mix.exs`:
+This package can be installed by adding `typetalk` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
