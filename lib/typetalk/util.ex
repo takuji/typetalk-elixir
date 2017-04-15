@@ -19,7 +19,7 @@ defmodule Typetalk.Util do
   end
 
   def make_indexed_params(name, values) do
-    Enum.zip(values, 0..(length(values)-1))
+    Enum.with_index(values)
     |> Enum.map(fn {value, idx} -> {:"#{name}[#{idx}]", value} end)
   end
 end

@@ -162,12 +162,12 @@ defmodule Typetalk do
   end
 
   defp make_attachment_file_urls(values) do
-    Enum.zip(values, 0..(length(values)-1))
+    Enum.with_index(values)
     |> Enum.map(fn {value, idx} -> {:"attachments[#{idx}].fileUrl", value} end)
   end
 
   defp make_attachment_file_names(values) do
-    Enum.zip(values, 0..(length(values)-1))
+    Enum.with_index(values)
     |> Enum.map(fn {value, idx} -> {:"attachments[#{idx}].fileName", value} end)
   end
 
@@ -520,7 +520,7 @@ defmodule Typetalk do
   """
   @spec create_talk(token, String.t, String.t, [integer]) :: {:ok, map}|{:error, map}
   def create_talk(token, topic_id, name, post_ids) do
-    data = Enum.zip(post_ids, 0..(length(post_ids) - 1))
+    data = Enum.with_index(post_ids)
          |> Enum.reduce(%{"talkName" => name}, fn ({post_id, idx}, acc) -> Map.put(acc, "postIds[#{idx}]", post_id) end)
          |> URI.encode_query()
     post(token, "topics/#{topic_id}/talks", data)
@@ -553,7 +553,7 @@ defmodule Typetalk do
   """
   @spec add_messages_to_talk(token, String.t, String.t, [integer]) :: {:ok, map}|{:error, map}
   def add_messages_to_talk(token, topic_id, talk_id, post_ids) do
-    data = Enum.zip(post_ids, 0..(length(post_ids) - 1))
+    data = Enum.with_index(post_ids)
          |> Enum.reduce(%{}, fn ({post_id, idx}, acc) -> Map.put(acc, "postIds[#{idx}]", post_id) end)
          |> URI.encode_query()
     post(token, "topics/#{topic_id}/talks/#{talk_id}/posts", data)
