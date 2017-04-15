@@ -19,7 +19,7 @@ defmodule Typetalk.Server do
   # OTP callbacks
   #
 
-  defp handle_call({api, args}, _from, auth) do
+  def handle_call({api, args}, _from, auth) do
     result = apply(Typetalk, api, [auth | args])
     {:reply, result, auth}
   end
