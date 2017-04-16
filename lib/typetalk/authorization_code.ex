@@ -34,12 +34,11 @@ defmodule Typetalk.AuthorizationCode do
   """
   @spec access_token(String.t, String.t, String.t, String.t) :: {:ok, Typetalk.AccessToken.t} | {:error, HTTPoison.Response}
   def access_token(client_id, client_secret, redirect_uri, code) do
-    params = {:form, [grant_type: "authorization_code",
-                      client_id: client_id,
-                      client_secret: client_secret,
-                      redirect_uri: redirect_uri,
-                      code: code]}
-    HTTPoison.post("https://typetalk.in/oauth2/access_token", params)
-    |> handle_response
+    {:form, [grant_type: "authorization_code",
+             client_id: client_id,
+             client_secret: client_secret,
+             redirect_uri: redirect_uri,
+             code: code]}
+    |> Typetalk.AccessToken.get_access_token
   end
 end
