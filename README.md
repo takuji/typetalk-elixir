@@ -1,6 +1,6 @@
 # Typetalk API client for Elixir
 
-A Typetalk client library for Elixir language.
+A [Typetalk](https://typetalk.in) client library for Elixir language.
 
 API Document: https://hexdocs.pm/typetalk/api-reference.html
 
