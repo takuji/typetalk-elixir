@@ -25,7 +25,7 @@ defmodule Typetalk.AccessToken do
   end
 
   def get_access_token(post_data) when is_tuple(post_data) do
-    HTTPoison.post("https://typetalk.in/oauth2/access_token", post_data)
+    HTTPoison.post("https://typetalk.com/oauth2/access_token", post_data)
     |> handle_response
     |> response_to_access_token
   end

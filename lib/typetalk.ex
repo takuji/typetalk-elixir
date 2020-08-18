@@ -2,7 +2,7 @@ defmodule Typetalk do
   import Typetalk.Util
   
   @moduledoc """
-  A [Typetalk](https://typetalk.in) API client library.
+  A [Typetalk](https://typetalk.com) API client library.
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk)
   """
@@ -10,10 +10,19 @@ defmodule Typetalk do
   @type type_talk_token :: binary
   @type access_token :: Typetalk.AccessToken.t
 
-  @api_base "https://typetalk.in/api/v1"
+  @api_base "https://typetalk.com/api/v1"
+  @api_v2_base "https://typetalk.com/api/v2"
 
   defp get(token, path, params \\ []) do
+    u = build_url(path, params)
+    IO.puts(u)
     build_url(path, params)
+    |> HTTPoison.get(auth_header(token))
+    |> handle_response
+  end
+
+  defp get_v2(token, path, params \\ []) do
+    build_url_v2(path, params)
     |> HTTPoison.get(auth_header(token))
     |> handle_response
   end
@@ -58,6 +67,13 @@ defmodule Typetalk do
     end
   end
 
+  defp build_url_v2(path, query_params) do
+    case query_params do
+      [] -> "#{@api_v2_base}/#{path}"
+      _ -> "#{@api_v2_base}/#{path}?#{URI.encode_query(query_params)}"
+    end
+  end
+
   # 
   # API
   # 
@@ -75,11 +91,12 @@ defmodule Typetalk do
   @doc """
   Returns the profile of the given account name.
 
-  [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-friend-profile)
+  [API Doc](https://developer.nulab.com/docs/typetalk/api/2/get-friend-profile)
   """
-  @spec get_friend_profile(token, String.t) :: {:ok, map}|{:error, map}
-  def get_friend_profile(token, account_name) do
-    get(token, "accounts/profile/#{account_name}")
+  @spec get_friend_profile(token, String.t, Keyword.t) :: {:ok, map}|{:error, map}
+  def get_friend_profile(token, space_key, options \\ []) do
+    params = message_options(options)
+    get_v2(token, "spaces/#{space_key}/profile", options)
   end
 
   @doc """
@@ -98,19 +115,19 @@ defmodule Typetalk do
 
   [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-topics)
   """
-  @spec get_topics(token) :: {:ok, map}|{:error, map}
-  def get_topics(token) do
-    get(token, "topics")
+  @spec get_topics(token, String.t) :: {:ok, map}|{:error, map}
+  def get_topics(token, space_key) do
+    get_v2(token, "topics", %{"spaceKey" => space_key})
   end
 
   @doc """
   Returns direct message topics.
 
-  [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-dm-topics)
+  [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/2/get-dm-topics)
   """
-  @spec get_dm_topics(token) :: {:ok, map}|{:error, map}
-  def get_dm_topics(token) do
-    get(token, "messages")
+  @spec get_dm_topics(token, String.t) :: {:ok, map}|{:error, map}
+  def get_dm_topics(token, space_key) do
+    get_v2(token, "messages", %{"spaceKey" => space_key})
   end
 
   @doc """
@@ -235,6 +252,16 @@ defmodule Typetalk do
     delete(token, "topics/#{topic_id}/posts/#{post_id}")
   end
 
+  @doc """
+  You can search through posted messages with this API.
+
+  [API Doc](https://developer.nulab.com/docs/typetalk/api/2/search-messages)
+  """
+  def search_messages(token, q, space_key, options) do
+    params = message_options(options) |> Keyword.merge([q: q, spaceKey: space_key])
+    get_v2(token, "search/posts", params)
+  end
+
   # Like
 
   @doc """
@@ -284,24 +311,24 @@ defmodule Typetalk do
   @doc """
   Get direct messages from an account.
 
-  [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/get-direct-messages)
+  [API Doc](https://developer.nulab.com/docs/typetalk/api/2/get-direct-messages)
   """
-  @spec get_direct_messages(token, String.t, Keyword.t) :: {:ok, map}|{:error, map}
-  def get_direct_messages(token, account_name, options \\ []) do
+  @spec get_direct_messages(token, String.t, String.t, Keyword.t) :: {:ok, map}|{:error, map}
+  def get_direct_messages(token, space_key, account_name, options \\ []) do
     data = Keyword.merge([direction: "forward"], options)
     account = URI.encode("@#{account_name}")
-    get(token, "messages/#{account}", data)
+    get_v2(token, "spaces/#{space_key}/messages/#{account}", data)
   end
 
   @doc """
   Post a direct message.
 
-  [API Doc](https://developer.nulab-inc.com/docs/typetalk/api/1/post-direct-message)
+  [API Doc](https://developer.nulab.com/docs/typetalk/api/2/post-direct-message)
   """
-  @spec post_direct_message(token, String.t, String.t, Keyword.t) :: {:ok, map}|{:error, map}
-  def post_direct_message(token, account_name, message, options) do
+  @spec post_direct_message(token, String.t, String.t, String.t, Keyword.t) :: {:ok, map}|{:error, map}
+  def post_direct_message(token, space_key, account_name, message, options) do
     data = options |> Keyword.merge([message: message])
-    post(token, "messages/@#{account_name}", data)
+    post(token, "spaces/#{space_key}/messages/@#{account_name}", data)
   end
 
   # Notifications

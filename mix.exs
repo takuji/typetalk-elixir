@@ -23,11 +23,11 @@ defmodule Typetalk.Mixfile do
 
   defp deps do
     [
-      {:credo, "~> 0.7", only: [:dev, :test]},
-      {:httpoison, "~> 0.11.1"},
-      {:poison, "~> 3.1"},
-      {:socket, "~> 0.3"},
-      {:ex_doc, "~> 0.14", only: :dev, runtime: false}
+      {:credo, "~> 1.0", only: [:dev, :test]},
+      {:httpoison, "~> 1.7.0"},
+      {:poison, "~> 4.0"},
+      {:socket, "~> 0.3.13"},
+      {:ex_doc, "~> 0.19.1", only: :dev, runtime: false}
     ]
   end
 

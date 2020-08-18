@@ -5,8 +5,6 @@ defmodule Typetalk.AuthorizationCode do
   You use this module when you offer a web service to other people.
   """
 
-  import Typetalk.Util
-
   @default_scope "my,topic.read,topi.post"
 
   @doc """
@@ -18,7 +16,7 @@ defmodule Typetalk.AuthorizationCode do
   @spec authorization_url(String.t, String.t, String.t) :: String.t
   def authorization_url(client_id, redirect_url, scope \\ @default_scope) do
     q = URI.encode_query(client_id: client_id, redirect_url: redirect_url, scope: scope, response_type: "code")
-    "https://typetalk.in/oauth2/authorize?#{q}"
+    "https://typetalk.com/oauth2/authorize?#{q}"
   end
 
   @doc """

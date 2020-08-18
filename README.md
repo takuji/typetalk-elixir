@@ -1,6 +1,6 @@
 # Typetalk API client for Elixir
 
-A [Typetalk](https://typetalk.in) client library for Elixir language.
+A [Typetalk](https://typetalk.com) client library for Elixir language.
 
 API Document: https://hexdocs.pm/typetalk/api-reference.html
 
@@ -30,7 +30,7 @@ topic_id = System.get_env("TYPETALK_TOPIC_ID")
 client_id = System.get_env("TYPETALK_CLIENT_ID")
 client_secret = System.get_env("TYPETALK_CLIENT_SECRET")
 scope = "my,topic.read,topic.post"
-{:ok, access_token} = Typetalk.ClientCredentail.access_token(client_id, client_secret, scope)
+{:ok, access_token} = Typetalk.ClientCredential.access_token(client_id, client_secret, scope)
 {:ok, spaces} = Typetalk.get_spaces(access_token)
 ```
 
