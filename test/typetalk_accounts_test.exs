@@ -4,13 +4,8 @@ defmodule TypetalkAccountsTest do
 
   test "get friends" do
     auth = access_token()
-    {:ok, res} = Typetalk.search_friends(auth, "a")
+    space = get_space(auth)
+    {:ok, res} = Typetalk.search_friends(auth, space["key"], "a")
     assert res["accounts"] != nil
-  end
-
-  test "search account" do
-    auth = access_token()
-    {:ok, res} = Typetalk.search_account(auth, "shimokawa")
-    assert res["id"] != nil
   end
 end

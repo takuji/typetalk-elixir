@@ -12,7 +12,8 @@ defmodule TypetalkTestHelper do
   end
 
   def get_topic(auth) do
-    {:ok, res} = Typetalk.get_topics(auth)
+    space = get_space(auth)
+    {:ok, res} = Typetalk.get_topics(auth, space["key"])
     topic = Enum.at(res["topics"], 0)
     topic["topic"]
   end
@@ -32,7 +33,7 @@ defmodule TypetalkTestHelper do
 
   def get_space(auth) do
     {:ok, res} = Typetalk.get_spaces(auth)
-    Enum.at(res["mySpaces"], 0)
+    Enum.at(res["mySpaces"], 0)["space"]
   end
 end
 

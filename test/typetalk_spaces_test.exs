@@ -11,7 +11,7 @@ defmodule TypetalkSpacesTest do
   test "get space members" do
     auth = access_token()
     space = get_space(auth)
-    {:ok, res} = Typetalk.get_space_members(auth, space["space"]["key"])
+    {:ok, res} = Typetalk.get_space_members(auth, space["key"])
     assert res["accounts"] != nil
   end
 end

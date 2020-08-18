@@ -12,8 +12,14 @@ defmodule TypetalkTest do
     json    
   end
 
+  defp get_space(auth) do
+    {:ok, spaces} = Typetalk.get_spaces(auth)
+    Enum.at(spaces["mySpaces"], 0)["space"]
+  end
+
   defp get_topic(auth) do
-    {:ok, res} = Typetalk.get_topics(auth)
+    space = get_space(auth)
+    {:ok, res} = Typetalk.get_topics(auth, space["key"])
     topic = Enum.at(res["topics"], 0)
     topic["topic"]
   end
@@ -39,13 +45,15 @@ defmodule TypetalkTest do
 
   test "get friend profile" do
     token = access_token()
-    {:ok, profile} = Typetalk.get_friend_profile(token, "shimokawa")
+    space = get_space(token)
+    {:ok, profile} = Typetalk.get_friend_profile(token, space["key"], accountName: "shimokawa")
     assert profile["account"] != nil    
   end
 
   test "get online status" do
     token = access_token()
-    {:ok, profile} = Typetalk.get_friend_profile(token, "shimokawa")
+    space = get_space(token)
+    {:ok, profile} = Typetalk.get_friend_profile(token, space["key"], accountName: "shimokawa")
     {_, json} = Typetalk.get_online_status(token, [profile["account"]["id"]])
     assert json["accounts"] != nil
     assert length(json["accounts"]) == 1
@@ -53,13 +61,15 @@ defmodule TypetalkTest do
 
   test "get topics" do
     token = access_token()
-    {:ok, res} = Typetalk.get_topics(token)
+    space = get_space(token)
+    {:ok, res} = Typetalk.get_topics(token, space["key"])
     assert res["topics"] != nil
   end
 
   test "get direct message topics" do
     token = access_token()
-    {:ok, res} = Typetalk.get_dm_topics(token)
+    space = get_space(token)
+    {:ok, res} = Typetalk.get_dm_topics(token, space["key"])
     assert res["topics"] != nil
   end
 
@@ -131,26 +141,5 @@ defmodule TypetalkTest do
     {:ok, _}   = Typetalk.like_message(auth, post["topic"]["id"], post["post"]["id"])
     {:ok, res} = Typetalk.unlike_message(auth, post["topic"]["id"], post["post"]["id"])
     assert res["like"] != nil
-  end
-
-  # Favorite topic
-
-  test "add topic to favorite" do
-    auth = access_token()
-    topic = get_topic(auth)
-    Typetalk.unfavorite_topic(auth, topic["id"])
-
-    {:ok, res} = Typetalk.favorite_topic(auth, topic["id"])
-    assert res["favorite"] == true
-  end
-
-  test "delete topic from favorite" do
-    auth = access_token()
-    topic = get_topic(auth)
-    Typetalk.unfavorite_topic(auth, topic["id"])
-    
-    {:ok, _} = Typetalk.favorite_topic(auth, topic["id"])
-    {:ok, res} = Typetalk.unfavorite_topic(auth, topic["id"])
-    assert res["favorite"] == false
   end
 end

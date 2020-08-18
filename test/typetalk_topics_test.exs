@@ -13,7 +13,7 @@ defmodule TypetalkTopicsTest do
     auth = access_token(scope: "my,topic.write,topic.delete")
     name = "TEST TOPIC #{:os.system_time(:millisecond)}"
     space = get_space(auth)
-    {:ok, created} = Typetalk.create_topic(auth, name, space["space"]["key"])
+    {:ok, created} = Typetalk.create_topic(auth, name, space["key"])
     assert created["topic"] != nil
     
     {:ok, deleted} = Typetalk.delete_topic(auth, created["topic"]["id"])
@@ -24,7 +24,7 @@ defmodule TypetalkTopicsTest do
     auth = access_token(scope: "my,topic.write,topic.delete")
     name = "TEST TOPIC #{:os.system_time(:millisecond)}"
     space = get_space(auth)
-    {:ok, created} = Typetalk.create_topic(auth, name, space["space"]["key"])
+    {:ok, created} = Typetalk.create_topic(auth, name, space["key"])
     assert created["topic"] != nil
     
     name = created["topic"]["name"] <> ":updated"
