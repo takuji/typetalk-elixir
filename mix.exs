@@ -7,8 +7,8 @@ defmodule Typetalk.Mixfile do
 
   def project do
     [app: :typetalk,
-     version: "0.1.2",
-     elixir: "~> 1.4",
+     version: "0.2.0",
+     elixir: "~> 1.10",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      name: "Typetalk",
